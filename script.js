@@ -713,6 +713,30 @@ const balancedData = [
   { zoren: "ZRM1104012", oem: ["31372882"], name: "Fuel Pump", car_maker: "Volvo", applications: "S80 XC60" },
   { zoren: "ZRM1501184", oem: ["BJ32-9A309-BB"], name: "Fuel Pump", car_maker: "Land Rover", applications: "Range Rover Sport 2014-2018" }
 ];
+  // ================= PART 4: ISUZU PAGE SPECIFIC DATA =================
+const isuzuPageData = [
+  { 
+    zoren: "ZRM0943095", 
+    oem: ["E8400M", "P76555M", "SP4051M"], 
+    name: "Fuel Pump", 
+    car_maker: "Isuzu", 
+    applications: "Isuzu Amigo Rodeo Sport 1998-2003" 
+  },
+  { 
+    zoren: "ZRM0943026", 
+    oem: ["E3963M", "67363", "323-00225", "953-5045", "530-2286", "SP6148M"], 
+    name: "Fuel Pump", 
+    car_maker: "Chevrolet / GMC", 
+    applications: "CHEVROLET C1500/C2500/K1500/K2500 SUBURBAN 1998-1999, TAHOE 1998-1999" 
+  },
+  { 
+    zoren: "ZRM0943097", 
+    oem: ["E3558M", "FG0331", "19180102", "25348610", "K9142", "MU1145", "MU1737", "P76488M", "SP6617M", "19369923"], 
+    name: "Fuel Pump", 
+    car_maker: "Hummer", 
+    applications: "HUMMER H2 2003" 
+  }
+];
 // ================= PART 4: MERGE AND SEARCH LOGIC =================
 // This block MUST come after all data parts (part1, part2, balancedData)
 
@@ -721,10 +745,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // 1. Combine all data parts into one master database
     // We use 'concat' or the spread operator (...) to merge them
     // If you named your lists differently, update the names here!
+    // 1. Combine all data parts into one master database
     const database = [
         ...part1, 
         ...part2, 
-        ...balancedData 
+        ...balancedData,
+        ...isuzuPageData  // <--- ADD THIS!
     ];
 
     let currentFilter = "all";
@@ -861,3 +887,4 @@ document.addEventListener("DOMContentLoaded", function() {
         searchBtn.click();
     }
 });
+
