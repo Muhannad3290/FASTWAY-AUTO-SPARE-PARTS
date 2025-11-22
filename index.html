@@ -7,6 +7,19 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <button id="openAddModal" class="add-btn" style="background:#27ae60; color:white; padding:10px 20px; border:none; border-radius:20px; margin-bottom:20px; cursor:pointer; display:block; margin: 0 auto;">+ Add New Part</button>
+
+<div id="addModal" style="display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+    <div style="background:white; margin:15% auto; padding:20px; width:90%; max-width:400px; border-radius:10px; display:flex; flex-direction:column; gap:10px;">
+        <h2 style="color:#333;">Add New Part</h2>
+        <input type="text" id="inZoren" placeholder="Zoren Number (e.g. ZRM123)" style="padding:10px; border:1px solid #ddd;">
+        <input type="text" id="inOem" placeholder="OEM Numbers (comma separated)" style="padding:10px; border:1px solid #ddd;">
+        <input type="text" id="inMaker" placeholder="Car Maker (e.g. Toyota)" style="padding:10px; border:1px solid #ddd;">
+        <input type="text" id="inApp" placeholder="Application (e.g. Camry 2015)" style="padding:10px; border:1px solid #ddd;">
+        <button id="savePartBtn" style="background:#27ae60; color:white; padding:10px; border:none; cursor:pointer;">Save Permanently</button>
+        <button id="closeModalBtn" style="background:#e74c3c; color:white; padding:10px; border:none; cursor:pointer;">Cancel</button>
+    </div>
+</div>
 
     <h1 class="app-title">
         ⚡ FASTWAY AUTOSPARE PARTS
@@ -37,4 +50,5 @@
 </body>
 
 </html>
+
 
