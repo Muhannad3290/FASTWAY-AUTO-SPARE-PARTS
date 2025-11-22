@@ -1,300 +1,722 @@
 // ================= PART 1: ASIAN BRANDS =================
 const part1 = [
   // --- HYUNDAI / KIA ---
-  { zoren: "ZRM0003011", oem: ["31110-09000", "E8678M"], name: "Fuel Pump Assembly", car_maker: "Hyundai / Kia", applications: "HYUNDAI SONATA 2.0 / KIA OPTIMA 2001-2005" },
-  { zoren: "ZRM0003012", oem: ["31110-3K300"], name: "Fuel Pump Module", car_maker: "Hyundai", applications: "HYUNDAI Sonata" },
-  { zoren: "ZRM0003013", oem: ["31110-2E300", "31110-2E000"], name: "Fuel Pump Assembly", car_maker: "Hyundai / Kia", applications: "HYUNDAI TUCSON 2005-2009 / Kia Sportage" },
-  { zoren: "ZRM0003027", oem: ["31110-17005"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Elantra Lavita 1.6L/1.8L / Matrix 1.6 2001-2010" },
-  { zoren: "ZRM0003031", oem: ["31110-0S100", "31110-0S000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Kia Cerato 2005-2012" },
-  { zoren: "ZRM0003036", oem: ["31110-26510", "E8663M"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai SANTA FE 2001-2006" },
-  { zoren: "ZRM0003052", oem: ["31110-2H000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Elantra 2.0L 2007-2012" },
-  { zoren: "ZRM0003088", oem: ["31110-26500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Santa Fe 2.4L 2.7L 2001-2005" },
-  { zoren: "ZRM0003101", oem: ["31110-3A400"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Trajet 2.0 2004-2008" },
-  { zoren: "ZRM1003004", oem: ["31110-1C000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Getz 1.1L/1.3L/1.6L 2002-2008" },
-  { zoren: "ZRM1003007", oem: ["31110-25000", "31110-25010"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Accent 1.3L 1.5L 1994-2000" },
-  { zoren: "ZRM1003008", oem: ["31110-25600"], name: "Fuel Pump", car_maker: "Hyundai", applications: "HYUNDAI ACCENT 1994-2000 / APMIRA 2000-2006" },
-  { zoren: "ZRM1123001", oem: ["31110-4M000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Hyundai Sonata 8 / Kia K5" },
-  { zoren: "ZRM1123002", oem: ["31110-3R000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Sonata / Optima Hybrid 2.4L 2011-2013" },
-  { zoren: "ZRM1123003", oem: ["31110-3R100"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Sonata Azera / KIA OPTIMA 2010-2014" },
-  { zoren: "ZRM1123004", oem: ["K30A-13-35ZB"], name: "Fuel Pump", car_maker: "Kia", applications: "Kia Rio Saloon 2000-2005" },
-  { zoren: "ZRM1123006", oem: ["31110-3Q700", "31110-3Q600", "E9120M"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Kia Optima 11-15 / Sonata 11-14 2.4L" },
-  { zoren: "ZRM1123007", oem: ["31110-4R500", "E9122M", "31110-3L800"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Hyundai Sonata & KIA Optima 2011-2013" },
-  { zoren: "ZRM1153007", oem: ["31110-1H000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Hyundai i30 07-12 / KIA CEED 06-12" },
-  { zoren: "ZRM1163001", oem: ["31110-0Q000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Elantra 2008-" },
-  { zoren: "ZRM1163002", oem: ["31110-2Z100", "31110-2Q500"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson iX35 2010-2013 / Sportage 10" },
-  { zoren: "ZRM1163007", oem: ["31110-1J000", "31110-0X000", "31110-1P000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai i20 2009-2013 / i10 1.2L 2008-2015" },
-  { zoren: "ZRM1163008", oem: ["31110-1M500", "31110-1M000", "31110-1M200"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Elantra i10 i20 2008-2015 / Kia Forte 2.0L 2010-2013" },
-  { zoren: "ZRM1163010", oem: ["31110-B3000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Mistra" },
-  { zoren: "ZRM1163011", oem: ["31110-2S200"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson ix35 10-14 / Kia Sportage III 10-14" },
-  { zoren: "ZRM1163012", oem: ["31110-2W400", "31110-2W200", "31110-2W300"], name: "Fuel Pump", car_maker: "Hyundai", applications: "SANTA FE ix45 2.4L 2006-2017" },
-  { zoren: "ZRM1163013", oem: ["31110-2W700"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai New SantaFe IX45 2.0T" },
-  { zoren: "ZRM1163014", oem: ["31110-2P000", "31110-2P400"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson 2004-2010 / Sorento 2009-2014 / Sportage 2004-2014" },
-  { zoren: "ZRM1163015", oem: ["31110-2S100"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson ix35 2010-2014 / Kia Sportage 2010-2014" },
-  { zoren: "ZRM1163016", oem: ["31110-C9000", "31110-A0000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Creta ix25 1.6L 2014-2018" },
-  { zoren: "ZRM1164003", oem: ["31110-0U000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "VERNA 1.6L 2008" },
-  { zoren: "ZRM1183004", oem: ["31110-2D030", "31110-2D000", "1000-110540"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "iX35 / Tucson 10-13 / Sportage 10" },
-  { zoren: "ZRM1183007", oem: ["31110-4X000", "E10814M"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "KIA RIO MK3 1.4 2011-2017 / Accent 2010" },
-  { zoren: "ZRM1183011", oem: ["31110-1G000", "31110-0M000", "31110-1E000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Accent III 1.4 2005-2011 / Rio 2005-2011" },
-  { zoren: "ZRM1183012", oem: ["31110-3X000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "i30 GD 11-15 / Veloster / Avante MD / KIA K3" },
-  { zoren: "ZRM1183013", oem: ["E8730M", "31110-1G500"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Hyundai Kia Accent Elantra Rio 06-11" },
-  { zoren: "ZRM1183015", oem: ["31110-2C631", "E8529M", "69861", "P76527M", "FE0351", "FG0792", "SP3011M"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Tiburon 2.7L V6 2003-2008" },
-  { zoren: "ZRM1183024", oem: ["31110-2F000"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA CERATO Hatchback 2.0 2004-2009" },
-  { zoren: "ZRM1183026", oem: ["31110-07150", "31110-07600", "31110-07000"], name: "Fuel Pump", car_maker: "Kia", applications: "Kia Morning / Picanto 1.0i/1.1i 2004-2017" },
-  { zoren: "ZRM1183027", oem: ["31110-2B000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Santa Fe CM 2.7 V6 2006-2012" },
-  { zoren: "ZRM1183034", oem: ["31110-1R500", "31110-2V500", "31110-1W500"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Elantra 2014-15 / Veloster 12-15 / Kia Forte 14-15" },
-  { zoren: "ZRM1183039", oem: ["31110-2K600", "E8995M", "31111-3L800", "P77043M", "SP1392", "23010085", "FG1281", "P76753M", "SP3044M"], name: "Fuel Pump", car_maker: "Kia", applications: "Kia Soul 1.6L 2.0 2012-2013" },
-  { zoren: "ZRM1293055", oem: ["31110-3X500", "E9073M"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Elantra 1.8L 2011-2015" },
-  { zoren: "ZRM1293100", oem: ["31110-0W000", "31110-1U000", "31110-5U000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Santa Fe 2.7L 3.3L 2007-2009" },
-  { zoren: "ZRM1501010", oem: ["31110-C1200", "31110-D6000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Hyundai Sonata 5/6 / Kia Optima 2016-UP" },
-  { zoren: "ZRM1501011", oem: ["31110-4Z500", "31110-4Z000", "E9217M", "FG1904", "SP3085M", "A30491"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Santa Fe Sport 2013-2017 / Kia Sorento 2014-2015" },
-  { zoren: "ZRM1501021", oem: ["31110-4H500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai H-1 H1 MPV Wagon 2008-2018" },
-  { zoren: "ZRM1183050", oem: ["31110-2V210", "31110-3X210", "31110-3X200", "31110-A1450", "31110-A7250"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Elantra E130 2011-2015 / KIA K3 Cerato 2013" },
-  { zoren: "ZRM1501027", oem: ["31110-F2100"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Elantra AD G4FG 1.6L 2015-2018" },
-  { zoren: "ZRM1501036", oem: ["31110-C5000"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA Sorento 2.4L 2014-2017" },
-  { zoren: "ZRM1501032", oem: ["31110-1W000"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA RIO III (UB) 1.25 CVVT 2011-2018" },
-  { zoren: "ZRM1501042", oem: ["31110-B4000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Grand i10 15-16 / Grand Avega / Grand Santa Fe" },
-  { zoren: "ZRM0003056", oem: ["31110-38200"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Optima 2001-02 / Sonata 2001-05" },
-  { zoren: "ZRM1123012", oem: ["31110-2S510"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson 2012-13 / Sportage 2012-13" },
-  { zoren: "ZRM1183010", oem: ["31110-2G000", "31110-2G500", "31110-2G200"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA Magentis 2.0L 2.7L 2005-2010" },
-  { zoren: "ZRM1293163", oem: ["E8821M"], name: "Fuel Pump", car_maker: "Hyundai", applications: "SANTA FE V6-2.7L/3.3L 2007-2009" },
-  { zoren: "ZRM1183058", oem: ["31110-1R000", "31110-2R000", "31110-1R100"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "KIA RIO III 2011-2017 / Accent IV 2010-2017" },
-  { zoren: "ZRM1501024", oem: ["31110-2B900"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Santa Fe 2006-2012" },
-  { zoren: "ZRM1501070", oem: ["31110-02000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Atos 1.0L 1998-2002" },
-  { zoren: "ZRM1501084", oem: ["27510-31000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai SM3 1992-1996" },
-  { zoren: "ZRM1501093", oem: ["31110-4D600"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA Grand Carnival 2.7 3.5 3.8L 2005-2014" },
-  { zoren: "ZRM1501094", oem: ["31110-2J400", "31110-2J600", "E9000M"], name: "Fuel Pump", car_maker: "Kia", applications: "Borrego Mohave 3.8L V6 2008-2012" },
-  { zoren: "ZRM1163021", oem: ["31110-2S000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Sportage 2.0 Diesel 10-13 / Tucson 2.0 Diesel 09-13" },
-  { zoren: "ZRM1183092", oem: ["31110-1R200"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Hyundai Accent / KIA Rio lll 2010-2017" },
-  { zoren: "ZRM1501079", oem: ["31110-2E960", "31110-1F980"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Tucson Sportage 2004-2010 DIESEL" },
-  { zoren: "ZRM1501099", oem: ["31110-4Z000", "31110-4Z500", "E9217M"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Santa Fe Sport 2.0T 13-17 / Sorento 3.3L 14-15" },
-  { zoren: "ZRM1501108", oem: ["31110-3K600"], name: "Fuel Pump", car_maker: "Hyundai", applications: "ACCENT 2005-2008 / SONATA 1989-2015" },
-  { zoren: "ZRM1501110", oem: ["31110-A0000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Creta 1.6L 2015-2018" },
-  { zoren: "ZRM1501111", oem: ["31110-D3500"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson 1.6L 15-16 / Sportage 2.4L 17-21" },
-  { zoren: "ZRM1501112", oem: ["31110-D7100"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Sportage 2016-2020" },
-  { zoren: "ZRM1501097", oem: ["31110-1D000", "2000-A81480"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA Carens III 2.0 2006-2018" },
-  { zoren: "ZRM1501125", oem: ["31110-C7000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai I20 ACTIVE 2015-2021" },
-  { zoren: "ZRM1501123", oem: ["31110-F3500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Elantra Forte 1.4L 1.6L 2.0L 2017-2020" },
-  { zoren: "ZRM1501124", oem: ["31110-J9500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Kona 1.6L/2.0L 2018-2020" },
-  { zoren: "ZRM1501137", oem: ["31110-D7000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Sportage 1.6L 15-19 / Tucson 1.6L 15-20" },
-  { zoren: "ZRM1501155", oem: ["31110-C2500", "31110-D5500"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Optima / Sonata 1.6L 2.0L 2.4L 2015-2020" },
-  { zoren: "ZRM1293168", oem: ["31110-F9000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Hyundai Yuena 1.4L 2016-2019" },
-  { zoren: "ZRM1501122", oem: ["31110-3J000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "IX55 Veracruz 3.0L V6 Diesel 2006-2023" },
-  { zoren: "ZRM1501139", oem: ["31110-D3100"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "TUCSON / SPORTAGE 2015-" },
-  { zoren: "ZRM1501167", oem: ["31110-F0000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "ELANTRA 1.6L L4 2016-2022" },
-  { zoren: "ZRM1501172", oem: ["31110-B8500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Santa Fe V6 3.3L 2013-2020" },
-  { zoren: "ZRM1501175", oem: ["31120-H6000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Accent 2018-2021" },
-  { zoren: "ZRM1501176", oem: ["31112-C6200", "31110-C6200", "DFG2311", "MM048", "809GE", "94460-C5000", "FHY21"], name: "Fuel Pump", car_maker: "Kia", applications: "Sorento 2.0L/2.4L/3.3L 2016-2020" },
-  { zoren: "ZRM1501178", oem: ["31110-D3000"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Tucson 1.6T 15-20 / Sportage 1.6T 15-21" },
-  { zoren: "ZRM1501180", oem: ["31110-C3500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Sonata 9th Gen 2.4L 1.6T 2015-2017" },
-  { zoren: "ZRM1501169", oem: ["31110-AA000", "31112-AA000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Elantra 2.0L 2021-2023" },
-  { zoren: "ZRM1163006", oem: ["31110-2P900"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Santa Fe 2009-2021 / Sorento Diesel" },
-  { zoren: "ZRM1163022", oem: ["31110-2W900"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Santa Fe 12-15 / Sorento 12-18 Diesel" },
-  { zoren: "ZRM1283012", oem: ["31110-A9900"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA Carnival 2.2L DIESEL 2015-2023" },
-  { zoren: "ZRM1183121", oem: ["31110-3J500"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Veracruz 3.8L 2007-2012" },
-  { zoren: "ZRM1083103", oem: ["F01R00S406", "LRC181BA0-1335XG"], name: "Fuel Pump", car_maker: "Bestune", applications: "BESTUNE X40/B30/SENIA R7" },
-  { zoren: "ZRM1501185", oem: ["31110-26350"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Santa Fe 2.4L 3.5L 2002-2006" },
-  { zoren: "ZRM1501186", oem: ["31110-4H000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "H-1 Travel 2.5 CRDI 2007-2015" },
-  { zoren: "ZRM1123022", oem: ["31110-B1000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Genesis 2015-2016 / G80 2017-2020" },
-  { zoren: "ZRM1283014", oem: ["31110-A9500"], name: "Fuel Pump", car_maker: "Kia", applications: "KIA SEDONA 2015-2021" },
-  { zoren: "ZRM1433007", oem: ["31110-G3200", "31110-G3300"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Cerato 2018-2021" },
-  { zoren: "ZRM1123008", oem: ["31110-3Q500", "E9036M", "SP3037M", "8644M", "P77064M"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Sonata 2.4L 2011-2015" },
-  { zoren: "ZRM15001193", oem: ["31110-B2500", "31111-B2000", "94460-B2000", "003-11782", "FG1898", "SP3303M"], name: "Fuel Pump", car_maker: "Kia", applications: "Kia Soul 1.6L 2.0L 2014-2015" },
-  { zoren: "ZRM1501194", oem: ["31110-4N000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "EON 2011-2018" },
-  { zoren: "ZRM1501202", oem: ["31110-02500"], name: "Fuel Pump", car_maker: "Hyundai / Kia", applications: "Prime MX / VISTO / ATOS 2001-2012" },
-  { zoren: "ZRM1501208", oem: ["31110-H9000", "31120-H9000", "31110-F9000"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Yuena 1.4L 2016-2019" },
-  { zoren: "ZRM1123021", oem: ["31110-3R800"], name: "Fuel Pump", car_maker: "Hyundai", applications: "Azera 2011-2014" },
-
-  // --- TOYOTA ---
-  { zoren: "ZRM0973001", oem: ["E8937M", "E8722M", "77020-06121", "77020-06190", "77020-06120", "77020-06401", "77020-06220", "77020-06321", "77020-33200", "77020-06191"], name: "Fuel Pump Assembly", car_maker: "Toyota", applications: "Toyota Camry 2007-2011 / Solara 2006-2008" },
-  { zoren: "ZRM0973002", oem: ["77020-06220", "77020-06190", "P76820M", "E8722M", "FG1169", "SP9043M", "69932", "77020-06221"], name: "Fuel Pump", car_maker: "Toyota", applications: "Camry 2.5L 2007-2011 / Solara 07-08" },
-  { zoren: "ZRM0973003", oem: ["77020-06050"], name: "Fuel Pump", car_maker: "Toyota", applications: "Camry 2003-2005" },
-  { zoren: "ZRM0973004", oem: ["77020-0D040", "77020-0D010"], name: "Fuel Pump", car_maker: "Toyota", applications: "Vios YARIS 1.0L-1.5L 1998-2005" },
-  { zoren: "ZRM0973005", oem: ["77020-12460", "77020-02190", "77020-12450"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla Fielder/Runx/Allex 2001-2007" },
-  { zoren: "ZRM1183001", oem: ["77020-02181", "77020-02291"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla Matrix Vibe 2005-2011" },
-  { zoren: "ZRM1183002", oem: ["77020-04061", "77020-04060", "E8756M", "E8757M", "77020-04071"], name: "Fuel Pump", car_maker: "Toyota", applications: "Tacoma 4.0L 2005-2015" },
-  { zoren: "ZRM1183003", oem: ["77020-0K080"], name: "Fuel Pump", car_maker: "Toyota", applications: "Vigo 2TR-FE Champ 2004-2016" },
-  { zoren: "ZRM1183020", oem: ["77020-60392", "77020-60340", "77020-60382", "77020-60372", "77020-60351", "77020-60352", "77020-60341", "77020-60362"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser 200 2007-2015" },
-  { zoren: "ZRM1183031", oem: ["77020-0N010", "77020-0N011", "77020-0N040", "77020-30380"], name: "Fuel Pump", car_maker: "Toyota", applications: "Reiz / Crown 2.5/3.0L 2005-2018" },
-  { zoren: "ZRM1183032", oem: ["77020-0K390", "77020-0K380", "77020-0K381", "77020-0K400"], name: "Fuel Pump", car_maker: "Toyota", applications: "HILUX 2.7L 2016-2019" },
-  { zoren: "ZRM1183033", oem: ["77020-60590", "77020-60490", "77020-60580"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser 2007-2015 / Lexus LX570" },
-  { zoren: "ZRM1183036", oem: ["77020-60440", "77020-60410", "77020-35151", "77020-35102", "77020-35170", "77020-35171", "77020-35150", "77020-60411", "77020-35130", "77020-35131", "77020-60441"], name: "Fuel Pump", car_maker: "Toyota", applications: "4Runner / Prado / Lexus GX460 2009-2013" },
-  { zoren: "ZRM1183037", oem: ["77020-35072", "77020-35092", "77020-35112", "77020-35070", "77020-35090", "77020-35071", "77020-35170", "77020-60340", "77020-60382", "77020-35080", "77020-60342"], name: "Fuel Pump", car_maker: "Toyota", applications: "Hilux Surf / 4Runner / Prado 2002-2009" },
-  { zoren: "ZRM1183041", oem: ["77020-60320", "77020-60490"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser 2007-2015 / Lexus LX570" },
-  { zoren: "ZRM1183042", oem: ["23220-0V030", "77020-0E030"], name: "Fuel Pump", car_maker: "Toyota", applications: "Highlander 2.7L / Lexus RX350 2009-2015" },
-  { zoren: "ZRM1183047", oem: ["77020-02630"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla 2014-2019" },
-  { zoren: "ZRM1183049", oem: ["77704-0D040", "77704-0D080", "23220-0M020", "77020-52330", "77020-0D120"], name: "Fuel Pump", car_maker: "Toyota", applications: "Vios YARIS 1.5L 2008-2013" },
-  { zoren: "ZRM1184007", oem: ["77020-0C120", "77020-0C170", "E9199M", "P77054M", "FG1624", "SP9175M"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sequoia / Tundra 5.7L 2012-2018" },
-  { zoren: "ZRM1501001", oem: ["77020-0D180", "77020-0D190"], name: "Fuel Pump", car_maker: "Toyota", applications: "Yaris / Vios 2013-2021" },
-  { zoren: "ZRM1501002", oem: ["77020-0C090"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sequoia / Tundra 5.7L 2009-2012" },
-  { zoren: "ZRM1501003", oem: ["77020-0R020", "77020-0R010"], name: "Fuel Pump", car_maker: "Toyota", applications: "RAV4 2.5L 3.5L 2009-2018" },
-  { zoren: "ZRM1501005", oem: ["77020-0R030"], name: "Fuel Pump", car_maker: "Toyota", applications: "RAV4 2.0L 2.4L 2009-2013" },
-  { zoren: "ZRM1501006", oem: ["77020-60202", "77020-60212", "77020-35060", "77020-60211"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser Prado 2002-2010 (GRJ120)" },
-  { zoren: "ZRM1501007", oem: ["77020-02070", "77020-02080"], name: "Fuel Pump", car_maker: "Toyota", applications: "Avensis / Corolla 2003-2008" },
-  { zoren: "ZRM1501014", oem: ["77020-48010", "77020-48051", "E8840M"], name: "Fuel Pump", car_maker: "Toyota", applications: "Lexus RX330 RX350 2005-2008" },
-  { zoren: "ZRM1183030", oem: ["P76713M", "FG0932", "9500218", "9510020", "9530004", "77020-0C070", "77020-0C071", "77020-0C072", "77020-0C080", "77020-0C082"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sequoia 08-09 / Tundra 07-14" },
-  { zoren: "ZRM1501028", oem: ["77020-12700", "77020-12570", "77020-02320", "77020-12081", "77020-02220", "77020-02710", "77020-02680", "77020-12860"], name: "Fuel Pump", car_maker: "Toyota", applications: "Auris / Corolla 2003-2016" },
-  { zoren: "ZRM1501035", oem: ["77020-0K150", "77020-0K070", "77020-0K140"], name: "Fuel Pump", car_maker: "Toyota", applications: "Fortuner / Hilux 2008-2016" },
-  { zoren: "ZRM1183094", oem: ["77020-26031", "77020-26010"], name: "Fuel Pump", car_maker: "Toyota", applications: "Hiace 06-09 / Hilux 06-15" },
-  { zoren: "ZRM1501039", oem: ["77020-60670", "77020-60470"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser Prado Diesel 2009-2017" },
-  { zoren: "ZRM1501040", oem: ["77020-60650"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser Prado 2017-" },
-  { zoren: "ZRM1501044", oem: ["77020-60430"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser Prado 2009-2017" },
-  { zoren: "ZRM1501045", oem: ["77020-12650"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla Fielder 2006-2012" },
-  { zoren: "ZRM1501046", oem: ["77020-12670"], name: "Fuel Pump", car_maker: "Toyota", applications: "Blade 2006-2009" },
-  { zoren: "ZRM1501047", oem: ["77020-58020", "77020-28110", "77020-58030", "23220-28300", "77020-28091", "77020-58050"], name: "Fuel Pump", car_maker: "Toyota", applications: "Alphard / Vellfire / Estima 2006-2019" },
-  { zoren: "ZRM1501063", oem: ["77020-06300", "77020-06282", "77020-06285", "77020-06286", "P76754M", "FG1969", "SP9169M", "77020-33363"], name: "Fuel Pump", car_maker: "Toyota", applications: "Lexus ES350 / Camry / Avalon 2012-2018" },
-  { zoren: "ZRM1501074", oem: ["23210-87403", "101961-6603", "23210-87Z03", "23210-B1040", "8223E", "23210-B1031"], name: "Fuel Pump", car_maker: "Toyota", applications: "Dahiatsu Terios 1.5L 2005-2012" },
-  { zoren: "ZRM1501069", oem: ["1525.GE", "77020-0H010", "77240-0H010"], name: "Fuel Pump", car_maker: "Toyota", applications: "Toyota Aygo / Peugeot 107/108 / Citroen C1" },
-  { zoren: "ZRM1501023", oem: ["23210-B1010", "101961-9421"], name: "Fuel Pump", car_maker: "Daihatsu", applications: "Toyota Passo / BB / Sirion 2004-2017" },
-  { zoren: "ZRM1501088", oem: ["23210-97201"], name: "Fuel Pump", car_maker: "Daihatsu", applications: "Charade Copen Sirion YRV Cuore" },
-  { zoren: "ZRM1501077", oem: ["77010-0K041"], name: "Fuel Pump", car_maker: "Toyota", applications: "Hilux 2KD 2004-2015" },
-  { zoren: "ZRM1501089", oem: ["77020-08040", "77020-08060"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sienna 2003-2009" },
-  { zoren: "ZRM1183171", oem: ["77020-0R050", "77020-42230"], name: "Fuel Pump", car_maker: "Toyota", applications: "RAV4 2018-2020" },
-  { zoren: "ZRM1183066", oem: ["77010-0K010", "77010-0K011"], name: "Fuel Pump", car_maker: "Toyota", applications: "Hilux Diesel 2004-2012" },
-  { zoren: "ZRM1501104", oem: ["77020-0E130"], name: "Fuel Pump", car_maker: "Toyota", applications: "Lexus RX450h/350 / Highlander 2013-2019" },
-  { zoren: "ZRM1501102", oem: ["77020-0K020"], name: "Fuel Pump", car_maker: "Toyota", applications: "Innova / Fortuner / Hilux 2004-2016" },
-  { zoren: "ZRM1501113", oem: ["77020-33530", "77020-06520", "77020-06481"], name: "Fuel Pump", car_maker: "Toyota", applications: "Camry 2.5L 2017-2021" },
-  { zoren: "ZRM1501117", oem: ["77020-60550"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser / Lexus LX570 2007-2016" },
-  { zoren: "ZRM1501118", oem: ["77020-04090"], name: "Fuel Pump", car_maker: "Toyota", applications: "Tacoma V6 3.5L 2015-2019" },
-  { zoren: "ZRM1501119", oem: ["77020-60640"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser Prado 2017-" },
-  { zoren: "ZRM1501103", oem: ["77020-60600", "77020-60601"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser Prado 2010-2020" },
-  { zoren: "ZRM1501120", oem: ["77020-0T010", "77020-0T020"], name: "Fuel Pump", car_maker: "Toyota", applications: "Venza 2.7L 3.5L 2008-2016" },
-  { zoren: "ZRM1183064", oem: ["77020-0E111", "FG1992", "478GE", "A30507", "P77055M", "SP9177M", "SP8071M"], name: "Fuel Pump", car_maker: "Toyota", applications: "Highlander 2.7L/3.5L 2013-2019" },
-  { zoren: "ZRM1183074", oem: ["77020-0K420", "77020-0K470"], name: "Fuel Pump", car_maker: "Toyota", applications: "Fortuner 2.7L 2016-2021" },
-  { zoren: "ZRM1183082", oem: ["77020-0D380", "77020-0D410"], name: "Fuel Pump", car_maker: "Toyota", applications: "Vios Yaris 2013-2020" },
-  { zoren: "ZRM0973006", oem: ["77020-0K030"], name: "Fuel Pump", car_maker: "Toyota", applications: "Innova Avensis 2.0L 2.7L 2006-2010" },
-  { zoren: "ZRM1501142", oem: ["77020-42010", "SP9038M", "7717552020", "7724132060"], name: "Fuel Pump", car_maker: "Toyota", applications: "RAV4 1994-2007" },
-  { zoren: "ZRM1501162", oem: ["77020-35120", "77020-35121"], name: "Fuel Pump", car_maker: "Toyota", applications: "FJ Cruiser 4.0L 2007-2014" },
-  { zoren: "ZRM1183111", oem: ["77020-30351", "77020-53073", "77020-92010", "77020-50071", "77020-53083", "77020-53082", "77020-53081", "77020-53080", "SP9046M", "P76752M", "FG1174", "E8812M"], name: "Fuel Pump", car_maker: "Toyota", applications: "Lexus IS250/350 2005-2013" },
-  { zoren: "ZRM1501159", oem: ["77020-33391", "77020-33380"], name: "Fuel Pump", car_maker: "Toyota", applications: "Lexus ES250 ES350 2012-2018" },
-  { zoren: "ZRM1183063", oem: ["77020-0C061", "E8694M"], name: "Fuel Pump", car_maker: "Toyota", applications: "Tundra 99-06 / Sequoia 00-07" },
-  { zoren: "ZRM1501163", oem: ["23210-BZ150"], name: "Fuel Pump", car_maker: "Toyota", applications: "Avanza 1.5L 2011-2015" },
-  { zoren: "ZRM1501164", oem: ["77020-52231", "292010-0014", "292010-0013"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sienta 2005-" },
-  { zoren: "ZRM1501171", oem: ["77010-0K200", "77010-0K201"], name: "Fuel Pump", car_maker: "Toyota", applications: "Hilux 4Runner Diesel 2015-2020" },
-  { zoren: "ZRM1501166", oem: ["77020-05080"], name: "Fuel Pump", car_maker: "Toyota", applications: "Avensis T22 1.8L 2000-2003" },
-  { zoren: "ZRM1183068", oem: ["77020-47081", "77020-02C70"], name: "Fuel Pump", car_maker: "Toyota", applications: "Prius 2009-2015" },
-  { zoren: "ZRM1183089", oem: ["77020-08070"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sienna 2010-2020" },
-  { zoren: "ZRM1203054", oem: ["0580313058", "77240-02050"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla 1997-2001" },
-  { zoren: "ZRM1183146", oem: ["77020-26080"], name: "Fuel Pump", car_maker: "Toyota", applications: "Hiace 2019-2021" },
-  { zoren: "ZRM1183069", oem: ["77020-02270"], name: "Fuel Pump", car_maker: "Toyota", applications: "Matrix 2008-2014" },
-  { zoren: "ZRM1183159", oem: ["77020-F4040"], name: "Fuel Pump", car_maker: "Toyota", applications: "C-HR 2017-2021" },
-  { zoren: "ZRM1183167", oem: ["77020-02A00"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla 2019-2022" },
-  { zoren: "ZRM1203063", oem: ["PE11-12-35X", "77020-WB001"], name: "Fuel Pump", car_maker: "Toyota", applications: "Yaris 1.5L 2015-2019" },
-  { zoren: "ZRM1501197", oem: ["77020-05111"], name: "Fuel Pump", car_maker: "Toyota", applications: "Avensis 2003-2008" },
-  { zoren: "ZRM1501198", oem: ["77020-08031"], name: "Fuel Pump", car_maker: "Toyota", applications: "Sienna 2003-2009" },
-  { zoren: "ZRM1073004", oem: ["23210-BZ130"], name: "Fuel Pump", car_maker: "Toyota", applications: "Avanza Rush" },
-  { zoren: "ZRM1183095", oem: ["77020-60540"], name: "Fuel Pump", car_maker: "Toyota", applications: "Land Cruiser 2007-2015 / Lexus LX570" },
-  { zoren: "ZRM1501199", oem: ["77020-42240"], name: "Fuel Pump", car_maker: "Toyota", applications: "Harrier / RAV4 2018-2020" },
-  { zoren: "ZRM1501200", oem: ["77020-F4030"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla / C-HR 2016-2020" },
-  { zoren: "ZRM1501201", oem: ["77020-02C21"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla 2019-2022 / C-HR" },
-  { zoren: "ZRM1183178", oem: ["77020-0R060", "77020-0R061"], name: "Fuel Pump", car_maker: "Toyota", applications: "RAV4 2018-2020" },
-  { zoren: "ZRM1501195", oem: ["77020-48040"], name: "Fuel Pump", car_maker: "Toyota", applications: "Lexus RX 1997-2003" },
-  { zoren: "ZRM1183199", oem: ["77020-12A60"], name: "Fuel Pump", car_maker: "Toyota", applications: "Corolla 2019-2021 / Prius / C-HR" },
-  { zoren: "ZRM1183165", oem: ["77020-0R070"], name: "Fuel Pump", car_maker: "Toyota", applications: "Harrier HEV / RAV4 2019-2022" },
-
-  // --- HONDA ---
-  { zoren: "ZRM1103003", oem: ["E8922M", "17045-TA0-A00"], name: "Fuel Pump", car_maker: "Honda", applications: "Acura TSX 2009-2014 / Accord Crosstour" },
-  { zoren: "ZRM1103005", oem: ["SP8025M", "17045-SWA-A01", "17045-SXS-A01", "17045SWAA01", "17045SXSA01"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda CR-V 2007-2011" },
-  { zoren: "ZRM1103008", oem: ["17045-S9A-000"], name: "Fuel Pump", car_maker: "Honda", applications: "SUV CRV 2003-2006" },
-  { zoren: "ZRM1103009", oem: ["17045-SAA-H50"], name: "Fuel Pump", car_maker: "Honda", applications: "Jazz Fit 1.3L 1.5L 2003-2008" },
-  { zoren: "ZRM1103010", oem: ["17045-TG5-000"], name: "Fuel Pump", car_maker: "Honda", applications: "Jazz Fit 1.3L 1.5L 2009-2014" },
-  { zoren: "ZRM1353001", oem: ["17045-SNV-000", "17045-SNA-003", "17045-SNV-010", "17045-SNV-020", "17708-SNA-003", "17708-SNA-000"], name: "Fuel Pump", car_maker: "Honda", applications: "Civic FA1 1.3-2.0L 2006-2011" },
-  { zoren: "ZRM1093066", oem: ["E8566M", "17045-S5A-A00", "17045-S5A-A30", "150308", "17045-S5A-A31", "402-P8566M", "40655", "69961", "69962", "FG1394", "P76528M", "SP8011M", "118GE", "17045S5AA31", "535-2020", "F4577A"], name: "Fuel Pump", car_maker: "Honda", applications: "Civic 2.0L 2002-2005" },
-  { zoren: "ZRM1153016", oem: ["17045-T2A-A00", "E9145M", "FG1544", "17045-T2A-A01", "SP8966M", "P76836M"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda Accord 13-17 / Acura TLX 16-19" },
-  { zoren: "ZRM1501154", oem: ["17045-TBF-A00"], name: "Fuel Pump", car_maker: "Honda", applications: "Civic 1.5L 2.0L 2016-2020" },
-  { zoren: "ZRM1501170", oem: ["17045-T9A-000"], name: "Fuel Pump", car_maker: "Honda", applications: "City 1.5L 2015-2019" },
-  { zoren: "ZRM1303005", oem: ["17045-TR0-H00", "17045-TR0-A00", "17045-TR0-G01", "17045-TR0-A50"], name: "Fuel Pump", car_maker: "Honda", applications: "Civic 1.8L 2012-2015 / Acura ILX" },
-  { zoren: "ZRM1153112", oem: ["17045-TLA-A02", "17045-TLA-A01"], name: "Fuel Pump", car_maker: "Honda", applications: "CR-V 2017-2024 / HR-V 2023-2024" },
-  { zoren: "ZRM1103018", oem: ["17045-S3V-A00", "E8720M", "17045-5S3-VA0", "SP8021M", "FG0957"], name: "Fuel Pump", car_maker: "Honda", applications: "Acura MDX 01-02 / Pilot 03-04" },
-  { zoren: "ZRM0943191", oem: ["17708-S4K-000", "17708SDGH01M1", "16010-SDG-H00", "17708-SEA-E01"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda Accord 2003-2008" },
-  { zoren: "ZRM1293552", oem: ["17045-TBA-A03", "FG2128"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda Civic 2016-2021" },
-  { zoren: "ZRM1501207", oem: ["17045-TA7-A01", "17045-TZ7-A00", "KA292100-6353"], name: "Fuel Pump", car_maker: "Honda", applications: "Acura TLX 2015-2020" },
-  { zoren: "ZRM1103013", oem: ["17045-T7J-H01", "17708-T7J-H02"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda HR-V 2016-2021" },
-  { zoren: "ZRM1153113", oem: ["17045-TVC-A04", "17045-TVC-A01", "17045-TVC-A03", "17045-TVC-A02", "P77570M"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda Accord 2018-2022" },
-  { zoren: "ZRM1153114", oem: ["17045-TVA-A03", "P77524M"], name: "Fuel Pump", car_maker: "Honda", applications: "Honda Accord 2018-2022" },
-  { zoren: "ZRM1143007", oem: ["17045-TZ5-A10", "P77029M", "17045-TX4-A01"], name: "Fuel Pump", car_maker: "Honda", applications: "Acura RDX 2013-2018" },
-  { zoren: "ZRM1103041", oem: ["17045-S3V-A01", "E8657M", "G0930", "17045-S9V-A00", "A27122", "AFS0943S", "P76306M"], name: "Fuel Pump", car_maker: "Honda", applications: "Acura MDX 05-06 / Pilot 05-08" },
-
-  // --- NISSAN ---
-  { zoren: "ZRM1073125", oem: ["17040-8U002"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sentra 1.8L 2.0L 2.5L 2000-2006" },
-  { zoren: "ZRM1073126", oem: ["17040-8N00B", "E8502M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sentra 1.8L 2.5L 2000-2004" },
-  { zoren: "ZRM1080001", oem: ["25060-JE60D", "25060-JH70A"], name: "Fuel Pump", car_maker: "Nissan", applications: "X-Trail T31 2007-2013" },
-  { zoren: "ZRM1082001", oem: ["17040-4BA2A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Trail T32 / Rogue 2014-2017" },
-  { zoren: "ZRM1083004", oem: ["25060-VW00A", "17042-BW0000"], name: "Fuel Pump", car_maker: "Nissan", applications: "Urvan 2.4L 2008-2010" },
-  { zoren: "ZRM1083029", oem: ["17040-2FJ0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Kai Chen D50/R50" },
-  { zoren: "ZRM1083030", oem: ["17040-JE20D"], name: "Fuel Pump", car_maker: "Nissan", applications: "T31 X-Trail / J10 Qashqai 2WD 08-13" },
-  { zoren: "ZRM1083031", oem: ["17040-JN00C", "17040-JN00A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Teana J32 2008-2012" },
-  { zoren: "ZRM1083032", oem: ["17040-JE60D", "17040-JG00A", "17020-4214R-0175", "17040-JY10A", "17040-JA10A", "17040-JD02A", "17040-3ZB0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Qashqai 2.0L / X-Trail T31 2.5L" },
-  { zoren: "ZRM1083033", oem: ["17040-JX30A", "17040-AX000", "17040-1FE1A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Versa / NV200 / Tiida" },
-  { zoren: "ZRM1083034", oem: ["17040-EW80C"], name: "Fuel Pump", car_maker: "Nissan", applications: "TIIDA Sylphy Livna 1.6L" },
-  { zoren: "ZRM1083035", oem: ["17040-CH000", "17040-9EH0C", "E9547M", "17040-35H0E", "5203E", "AR0034488AC"], name: "Fuel Pump", car_maker: "Nissan", applications: "Aprio / Tiida 1.8L 1.6L 2007-2012" },
-  { zoren: "ZRM1083037", oem: ["17040-JD00A", "0986580380"], name: "Fuel Pump", car_maker: "Nissan", applications: "Qashqai 2007-2014" },
-  { zoren: "ZRM1083038", oem: ["E8496M", "170408J005", "67989", "67988", "P76171M", "FG0501", "P3386M", "170408J100", "170408J105"], name: "Fuel Pump", car_maker: "Nissan", applications: "Altima 2.5L 3.5L 2002-2003" },
-  { zoren: "ZRM1083041", oem: ["17040-CG000", "17040-EV10A", "E8534M", "P76334M", "E8540M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti FX35 FX45 / 350Z" },
-  { zoren: "ZRM1083042", oem: ["17040-1FE1C", "17040-AX01A", "17040-AX000", "17040-1FE1A", "17040-1FA0A", "17040-1V10A", "17040-9EG0C", "17040-1FA1A", "17040-JX00A", "17040-EE500"], name: "Fuel Pump", car_maker: "Nissan", applications: "Tiida Versa Sylphy Bluebird Cube Note" },
-  { zoren: "ZRM1083043", oem: ["17040-3TS0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "L33 Teana 2014-2017" },
-  { zoren: "ZRM1083044", oem: ["17040-3DN0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Tiida Sunny March 2011-2016" },
-  { zoren: "ZRM1083047", oem: ["17040-EE50C"], name: "Fuel Pump", car_maker: "Nissan", applications: "Tiida 1.8L SC11 Grand Livina" },
-  { zoren: "ZRM1083062", oem: ["17040-KH40A", "17040-JR40D", "17040-JR50A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Navara D40T 2005-2007" },
-  { zoren: "ZRM1083063", oem: ["17040-5M300"], name: "Fuel Pump", car_maker: "Nissan", applications: "Almera Pulsar Sentra 2000-" },
-  { zoren: "ZRM1083067", oem: ["17040-4FN0A", "17040-3RW0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sentra Pulsar Tiida 2012-2016" },
-  { zoren: "ZRM1083131", oem: ["17040-VZ00A", "17040-VZ10A", "17040-VZ10B"], name: "Fuel Pump", car_maker: "Nissan", applications: "E25 URVAN 2.5 2008-2012" },
-  { zoren: "ZRM1153002", oem: ["17040-9EG0B", "E8855M", "17040-9EG0C", "17040-1FC0B", "17040-EM30A", "17040-EM31A", "17040-ZR70B", "150314", "SP4099M", "SP4022M", "P77095M", "P76612M", "FG1149", "TU319", "40204"], name: "Fuel Pump", car_maker: "Nissan", applications: "Versa Cube 2009-2014" },
-  { zoren: "ZRM1153005", oem: ["17040-CA000", "E8536M", "17040-1AA0B", "17040-1AA0C", "17040-1AA0A", "17040-CB00A", "17040-CB000"], name: "Fuel Pump", car_maker: "Nissan", applications: "Murano 3.5L V6 2003-2014" },
-  { zoren: "ZRM1153006", oem: ["17040-1HM0A", "17040-1HJ0A", "17040-1HJ0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sunny N17 / March K13 2011-2017" },
-  { zoren: "ZRM1153008", oem: ["E8755M", "17040-9N00A", "EH755M", "150331", "17040-JA00A", "17040-ZX01B", "17040-ZX00B", "17040-ZX00A", "17040-3NT0A", "17040-7Y000"], name: "Fuel Pump", car_maker: "Nissan", applications: "Maxima 2009-2014 / Altima 2007-2012" },
-  { zoren: "ZRM1153010", oem: ["E8856M", "17040JM10C", "E8854M", "P76755M", "FG1147", "FG1148", "SP4061M", "SP4108M", "17040JM10A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Rogue 2.5L 2008-2015" },
-  { zoren: "ZRM1153011", oem: ["17040-1KA0A", "17040-9U01B", "22571", "775043", "2250056", "17040-9U01C", "17040-AX000", "17040-AX010", "QFP903", "39095", "EFP409", "FP5148", "LFP199", "WG1778395", "WG1796706"], name: "Fuel Pump", car_maker: "Nissan", applications: "Juke March Note" },
-  { zoren: "ZRM1153013", oem: ["17040-1KD0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Juke F15 2010-2014" },
-  { zoren: "ZRM1153015", oem: ["17040-3SG0C", "E9213M", "17040-3SG0E", "FG1549", "SP4097M", "17040-3SG0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sentra 1.8L 2013-2018" },
-  { zoren: "ZRM1163004", oem: ["17040-95F0B", "27510-31100"], name: "Fuel Pump", car_maker: "Nissan", applications: "Almera I/II Altima" },
-  { zoren: "ZRM1283145", oem: ["17040-ET00A", "E8752M", "17040-9AA0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sentra 2007-2012" },
-  { zoren: "ZRM1293004", oem: ["17040-EA000", "E8743M", "17040-ZS00A", "17040-ZZ00A", "17040-ZP00A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Frontier Pathfinder Xterra" },
-  { zoren: "ZRM1343018", oem: ["17040-ZQ60A", "17040-7S000", "E8595M", "17040-7S00A", "17040-7S20A", "17040-ZE00A", "17040-ZE00B", "17040-ZQ60C", "17040-ZH000", "17040-ZH00A", "17040-ZQ40B", "17040-ZE40B", "P76654M", "SP4021M", "E8788M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Titan Armada Infiniti QX56" },
-  { zoren: "ZRM1083069", oem: ["17040-EW80A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Tiida 2004-2012" },
-  { zoren: "ZRM1501009", oem: ["17040-3XA0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Urvan Nv350 2012-2016" },
-  { zoren: "ZRM1093027", oem: ["17040-8H31B"], name: "Fuel Pump", car_maker: "Nissan", applications: "X-Trail T30 QR25 2000-2007" },
-  { zoren: "ZRM1093049", oem: ["17040-4M405"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sunny N16 2003-2010" },
-  { zoren: "ZRM1153004", oem: ["E8545M", "170407Y000", "P76169M", "17040ZD80B", "17040ZB00A", "FG0987", "17040-9j400"], name: "Fuel Pump", car_maker: "Nissan", applications: "Maxima Altima Quest 2004-2009" },
-  { zoren: "ZRM1501016", oem: ["17040-VK01A", "17040-1S40A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Nissan D22 KA24 2009-2014" },
-  { zoren: "ZRM1501025", oem: ["17040-1CB0D", "17040-1CJ0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti FX35 FX37 QX70" },
-  { zoren: "ZRM1343046", oem: ["E8862M", "17040-ZH000", "150315", "17040-ZH00A", "17040-ZQ60B", "550-2120", "FG1277", "P76570M", "SP4023M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Titan / Armada 5.6L" },
-  { zoren: "ZRM1501026", oem: ["17040-3TA0C", "E9183M", "17040-4RA0C", "P77017M", "17040-3TA0A", "17040-3TA0B", "17040-3TA0D", "17040-2790A", "SP4090M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Altima Teana Maxima 2013-2018" },
-  { zoren: "ZRM1293198", oem: ["17040-EB80C", "17040-4KJ0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Navara Pathfinder 4.0L" },
-  { zoren: "ZRM1501057", oem: ["0580313101", "17040-AV710", "CBA7617", "775635", "72617", "7507125", "77125", "320900443", "WG1013068", "WG1778897"], name: "Fuel Pump", car_maker: "Nissan", applications: "Primera 2002-2016" },
-  { zoren: "ZRM1501049", oem: ["17040-ED80A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Tiida C11 SC11 2005-2011" },
-  { zoren: "ZRM1501064", oem: ["17040-4BB1A", "17040-4BA2A", "17040-6FM0A", "17040-6FL0A", "17040-4EF1A", "17040-4BA1A"], name: "Fuel Pump", car_maker: "Nissan", applications: "X-Trail T32 1.6 2013-2018" },
-  { zoren: "ZRM1501065", oem: ["17040-4ED0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Qashqai J11 1.2 2014-2018" },
-  { zoren: "ZRM1501092", oem: ["17040-Y2900"], name: "Fuel Pump", car_maker: "Nissan", applications: "Pickup ZG24" },
-  { zoren: "ZRM1501085", oem: ["17040-1LB3E", "17040-1LB1E", "17040-1LB1A", "17040-1LB4E", "17040-1LB1D", "17040-1LB0E", "17040-1LB7A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Patrol Y62 / Infiniti QX56 QX80 (1 tube)" },
-  { zoren: "ZRM1501086", oem: ["17040-1LB5D", "17040-5ZP0A", "17040-1LB8A", "17040-1LB5C", "17040-1LB2D", "17040-1LB5B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Patrol Y62 / Infiniti QX56 (2 tubes)" },
-  { zoren: "ZRM1501087", oem: ["17040-1LK0A", "17040-1LB2C", "17040-1LB0A", "17040-1LA0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Patrol Y62 (3 tubes)" },
-  { zoren: "ZRM1293297", oem: ["17040-3ZD0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti QX56 QX80 Armada 5.6L" },
-  { zoren: "ZRM1083071", oem: ["17040-1KT0B", "17040-1KT0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Juke HR15DE 2011-2017" },
-  { zoren: "ZRM1083106", oem: ["17040-JD01D", "17040-JD01A", "17040-JD03A", "17040-JD01B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Dualis Qashqai 2007-2013" },
-  { zoren: "ZRM1073129", oem: ["17040-1VA0A", "17040-3JY0A", "17040-3LT0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Evalia M20 / Serena" },
-  { zoren: "ZRM1293187", oem: ["17040-3AN0E", "E9100M", "P77040M", "FG1538", "SP4094M", "17040-3AN0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Micra Versa Note 2012-2019" },
-  { zoren: "ZRM1501100", oem: ["17040-3KT1C", "17040-3JL0A", "17040-3KT1A", "17040-3KT1B", "17040-3KT1D", "17040-3KT1E", "17040-3KA1C"], name: "Fuel Pump", car_maker: "Nissan", applications: "Pathfinder Infiniti QX60 2013-2020" },
-  { zoren: "ZRM1501136", oem: ["17040-1KH0A", "17040-5JJ1A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Frontier 2.5L D23X 2015-2018" },
-  { zoren: "ZRM1083080", oem: ["17040-CG00B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti FX35 V6 2003-2008" },
-  { zoren: "ZRM1501138", oem: ["17040-1EK0B", "17040-1EK0A", "E9069M", "FG1648"], name: "Fuel Pump", car_maker: "Nissan", applications: "Nissan 370Z 2009-2015" },
-  { zoren: "ZRM1501140", oem: ["17040-1CJ0C", "17040-1CB0D", "17040-1CA0D", "17040-1CJ0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti FX35 FX50 QX70" },
-  { zoren: "ZRM1501141", oem: ["17040-4BB2A"], name: "Fuel Pump", car_maker: "Nissan", applications: "X-Trail 2.5L Qashqai J11" },
-  { zoren: "ZRM1501048", oem: ["17040-5RB0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Kicks March Versa 2017-2021" },
-  { zoren: "ZRM1501174", oem: ["17040-1HK0A", "17040-1HK0B", "E9100M", "SP4199M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Micra Versa 2012-2019" },
-  { zoren: "ZRM1501022", oem: ["17040-5M500"], name: "Fuel Pump", car_maker: "Nissan", applications: "Bluebird Sylphy G10 Sunny N16" },
-  { zoren: "ZRM1293248", oem: ["17040-6CT0A", "17040-6CA0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Teana Altima 2019-2022" },
-  { zoren: "ZRM1083191", oem: ["17040-1BA0A", "E8931M", "17040-1BA0B", "17040-1BA0C", "17040-1BB0C", "FG1630", "SP4140M"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti EX35 EX37 QX50" },
-  { zoren: "ZRM1153122", oem: ["17040-1KM1A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Juke 1.5 2012-2016" },
-  { zoren: "ZRM1083187", oem: ["17040-1MA0B"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti M37 Q50 Q70" },
-  { zoren: "ZRM1501187", oem: ["17040-4BA0C", "17040-4BA0B", "17040-4BA0A", "FG1932"], name: "Fuel Pump", car_maker: "Nissan", applications: "Rogue 2.5L 2014-2020" },
-  { zoren: "ZRM1501190", oem: ["17040-6LB0B", "17040-6LB0A", "17040-6LB0C"], name: "Fuel Pump", car_maker: "Nissan", applications: "Sentra 2020-2024" },
-  { zoren: "ZRM1501192", oem: ["17040-1JA2A", "17040-1JA3A", "17040-1JA0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Quest 3.5L 2011-2017" },
-  { zoren: "ZRM1083163", oem: ["17040-1BB0B", "17040-1BA0D", "17040-1BB0C", "25060-1BA1C"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti EX35 EX37 2008-2013" },
-  { zoren: "ZRM1083164", oem: ["17040-1NC0C"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti G25 G37 M35 Q40" },
-  { zoren: "ZRM1501213", oem: ["17040-6AU0A", "17040-4HK1A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti Q50 16-23 / Q60 17-22" },
-  { zoren: "ZRM1501210", oem: ["17040-5RL0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Nissan Versa" },
-  { zoren: "ZRM1501218", oem: ["17040-6HA0A"], name: "Fuel Pump", car_maker: "Nissan", applications: "Infiniti Q50 Q60 2015-2019" }
-];
+{ 
+    zoren: "ZRM0003011", 
+    oem: ["31110-09000", "E8678M"], 
+    name: "Fuel Pump Assembly", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI SONATA 2.0 / KIA OPTIMA 2001-2005" 
+  },
+  { 
+    zoren: "ZRM0003012", 
+    oem: ["31110-3K300"], 
+    name: "Fuel Pump Module", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI Sonata" 
+  },
+  { 
+    zoren: "ZRM0003013", 
+    oem: ["31110-2E300", "31110-2E000"], 
+    name: "Fuel Pump Assembly", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI TUCSON 2005-2009 Kia Sportage" 
+  },
+  { 
+    zoren: "ZRM0003027", 
+    oem: ["31110-17005"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra Lavita (FC), 1.6L/1.8L, Hyundai Matrix (FC) 1.6 2001-2010" 
+  },
+  { 
+    zoren: "ZRM0003031", 
+    oem: ["31110-0S100", "31110-0S000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Kia Cerato 2005-2012" 
+  },
+  { 
+    zoren: "ZRM0003036", 
+    oem: ["31110-26510", "E8663M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai SANTA FÉ 2001-2006" 
+  },
+  { 
+    zoren: "ZRM0003052", 
+    oem: ["31110-2H000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra 2.0L 2007-2012" 
+  },
+  { 
+    zoren: "ZRM0003088", 
+    oem: ["31110-26500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe 2.4L 2.7L 2001-2005" 
+  },
+  { 
+    zoren: "ZRM0003101", 
+    oem: ["31110-3A400"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Trajet 2.0 2004/01 - 2008/07" 
+  },
+  { 
+    zoren: "ZRM1003004", 
+    oem: ["31110-1C000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Getz 1.1L/1.3L/1.6L 2002-2008" 
+  },
+  { 
+    zoren: "ZRM1003007", 
+    oem: ["31110-25000", "31110-25010"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Accent 1.3L 1.5L 1994-2000" 
+  },
+  { 
+    zoren: "ZRM1003008", 
+    oem: ["31110-25600"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI ACCENT 1994-2000 APMIRA KASA 2000-2006" 
+  },
+  { 
+    zoren: "ZRM1123001", 
+    oem: ["31110-4M000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Sonata8 for KIA K5" 
+  },
+  { 
+    zoren: "ZRM1123002", 
+    oem: ["31110-3R000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Sonata KIA Optima Hybrid 2.4L 2011-2013" 
+  },
+  { 
+    zoren: "ZRM1123003", 
+    oem: ["31110-3R100"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Sonata Azera KIA OPTIMA 2010-2014" 
+  },
+  { 
+    zoren: "ZRM1123004", 
+    oem: ["K30A-13-35ZB"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Kio Rio Saloon 2000-2005" 
+  },
+  { 
+    zoren: "ZRM1123006", 
+    oem: ["31110-3Q700", "31110-3Q600", "E9120M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Kia Optima 11-15 Sonata 11-14 2.4 L4" 
+  },
+  { 
+    zoren: "ZRM1123007", 
+    oem: ["31110-4R500", "E9122M", "31110-3L800"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Sonata & KIA Optima fg1631 2011-2013" 
+  },
+  { 
+    zoren: "ZRM1153007", 
+    oem: ["31110-1H000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai i30 07-12 KIA CEED 06-12" 
+  },
+  { 
+    zoren: "ZRM1163001", 
+    oem: ["31110-0Q000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI Elantra 2008-" 
+  },
+  { 
+    zoren: "ZRM1163002", 
+    oem: ["31110-2Z100", "31110-2Q500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI Tucson iX35 2010-2013 Sportage 10" 
+  },
+  { 
+    zoren: "ZRM1163007", 
+    oem: ["31110-1J000", "31110-0X000", "31110-1P000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai I20 Petrol 2009-2013 build 2010 Hyundai I10, 2008/11-2015/12, 1.2L" 
+  },
+  { 
+    zoren: "ZRM1163008", 
+    oem: ["31110-1M500", "31110-1M000", "31110-1M200"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra i10, i20 2008-2015 Kia Forte 2.0L-L4 2010-2013, I30 Kia Cerato, Forte, Sorento 2008" 
+  },
+  { 
+    zoren: "ZRM1163010", 
+    oem: ["31110-B3000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Mistra" 
+  },
+  { 
+    zoren: "ZRM1163011", 
+    oem: ["31110-2S200"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Tucson ix35 10-14 Kia Sportage III 10-14" 
+  },
+  { 
+    zoren: "ZRM1163012", 
+    oem: ["31110-2W400", "31110-2W200", "31110-2W300"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "SANTA FÉ ix45 2.4L 2006-2017" 
+  },
+  { 
+    zoren: "ZRM1163013", 
+    oem: ["31110-2W700"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai New SantaFe IX45 2.0T" 
+  },
+  { 
+    zoren: "ZRM1163014", 
+    oem: ["31110-2P000", "31110-2P400"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai TUCSON (JM) ,2.0L/2.7L, 2004/08 - 2010/03 KIA SORENTO (XM) ,2.4L, 2009/11 - 2014 KIA Sportage 2.0L/2.7L,2004/09-2014" 
+  },
+  { 
+    zoren: "ZRM1163015", 
+    oem: ["31110-2S100"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Tucson ix35 2010-2014 Kia Sportage 2010-2014" 
+  },
+  { 
+    zoren: "ZRM1163016", 
+    oem: ["31110-C9000", "31110-A0000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Creta ix25 Cantus 1.6L ix25 2014-2018" 
+  },
+  { 
+    zoren: "ZRM1164003", 
+    oem: ["31110-0U000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "VERNA 1.6L 2008" 
+  },
+  { 
+    zoren: "ZRM1183004", 
+    oem: ["31110-2D030", "1000-110540", "31110-2D000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI iX35 Tucson 10-13 Sportage 10" 
+  },
+  { 
+    zoren: "ZRM1183007", 
+    oem: ["31110-4X000", "E10814M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA RIO MK3 1.4 2011-2017 Hyundai Accent 2010 RIO LX UB 09/2011-on 4-D Hatch 1.4L G4FA" 
+  },
+  { 
+    zoren: "ZRM1183011", 
+    oem: ["31110-1G000", "31110-0M000", "31110-1E000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Accent III 1.4gl, 2005/2011 Rio2005-2011" 
+  },
+  { 
+    zoren: "ZRM1183012", 
+    oem: ["31110-3X000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai i30 GD 2011-2015, Veloster 2011-2015, Avante MD 2010-2015, KIA K3 2012" 
+  },
+  { 
+    zoren: "ZRM1183013", 
+    oem: ["E8730M", "31110-1G500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Kia Accent Elantra Rio Rio5 06-11" 
+  },
+  { 
+    zoren: "ZRM1183015", 
+    oem: ["31110-2C631", "E8529M", "69861", "P76527M", "FE0351", "FG0792", "SP3011M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Tiburon 2.7L V6 2003-2008" 
+  },
+  { 
+    zoren: "ZRM1183024", 
+    oem: ["31110-2F000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA CERATO Hatchback 2.0 2004-2009" 
+  },
+  { 
+    zoren: "ZRM1183026", 
+    oem: ["31110-07150", "31110-07600", "31110-07000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Kia Morning Picanto 1.0i/1.1i 2004-2017" 
+  },
+  { 
+    zoren: "ZRM1183027", 
+    oem: ["31110-2B000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe CM 2.7 V6 2006-2012" 
+  },
+  { 
+    zoren: "ZRM1183034", 
+    oem: ["31110-1R500", "31110-2V500", "31110-1W500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra 2015-2014, Elantra Coupe 2014, Elantra GT 2014, Veloster 2015-2012, Kia Forte 2015-2014, Forte5 2015-2014, Forte Koup 2015-2014 Carter" 
+  },
+  { 
+    zoren: "ZRM1183039", 
+    oem: ["31110-2K600", "E8995M", "P77043M", "SP1392", "23010085", "FG1281", "31111-3L800", "P76753M", "SP3044M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Kia Soul 1.6L 2.0 2012-2013" 
+  },
+  { 
+    zoren: "ZRM1293055", 
+    oem: ["31110-3X500", "E9073M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra 1.8L 2011-2015" 
+  },
+  { 
+    zoren: "ZRM1293100", 
+    oem: ["31110-0W000", "31110-1U000", "31110-5U000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe 2.7L 3.3L 2007-2009" 
+  },
+  { 
+    zoren: "ZRM1501010", 
+    oem: ["31110-C1200", "31110-D6000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Sonata 5 Sonata 6 Kia Optima 2016-UP" 
+  },
+  { 
+    zoren: "ZRM1501011", 
+    oem: ["31110-4Z500", "31110-4Z000", "E9217M", "FG1904", "SP3085M", "A30491"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe Sport 2013-2017 Kia Sorento 2014-2015" 
+  },
+  { 
+    zoren: "ZRM1501021", 
+    oem: ["31110-4H500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai H-1 H1 MPV Wagon 2008-2018" 
+  },
+  { 
+    zoren: "ZRM1183050", 
+    oem: ["31110-2V210", "31110-3X210", "31110-A1450", "31110-A7250", "31110-3X200"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hundai Elantra E130 2011-2015 KIA K3 Cerato 2013" 
+  },
+  { 
+    zoren: "ZRM1501027 / ZRM1433005", 
+    oem: ["31110-F2100"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra AD G4FG 1.6L 2015-2018" 
+  },
+  { 
+    zoren: "ZRM1501036", 
+    oem: ["31110-C5000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA Sorento 2.4L 2014-2017" 
+  },
+  { 
+    zoren: "ZRM1501032", 
+    oem: ["31110-1W000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA RIO III (UB) 1.25 CVVT 09/2011 -2018" 
+  },
+  { 
+    zoren: "ZRM1501042 / ZRM1163060", 
+    oem: ["31110-B4000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI grand i10 2015-2016, Grand Avega 2011-2016, Grand Santa Fe 2015-2016" 
+  },
+  { 
+    zoren: "ZRM0003056", 
+    oem: ["31110-38200"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA Optima 2001-2002, Sonata 2001-2005 2.7L/2.4L, HYUNDAI SONATA MK III 2.0L 16V 1996-1997 Saloon 2001-2004" 
+  },
+  { 
+    zoren: "ZRM1123012", 
+    oem: ["31110-2S510"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Tucson 2012-2013 L4 2.0L/2.4L, KIA Sportage 2012-2013 L4 2.4L" 
+  },
+  { 
+    zoren: "ZRM1183010", 
+    oem: ["31110-2G000", "31110-2G500", "31110-2G200"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA Magentis 2.0L 2.7L 2005-2010" 
+  },
+  { 
+    zoren: "ZRM1293163", 
+    oem: ["E8821M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "HYUNDAI SANTA FE V6-2.7L V6-3.3L 2009-2007" 
+  },
+  { 
+    zoren: "ZRM1183058", 
+    oem: ["31110-1R000", "31110-2R000", "31110-1R100"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai Kia", 
+    applications: "Kia RIO III 2011-2017, Hyundai Accent IV 2010-2017" 
+  },
+  { 
+    zoren: "ZRM1501024 / ZRM1183091", 
+    oem: ["31110-2B900"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe 2006-2012" 
+  },
+  { 
+    zoren: "ZRM1501070", 
+    oem: ["31110-02000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Atos 1.0L 1998-2002" 
+  },
+  { 
+    zoren: "ZRM1501084", 
+    oem: ["27510-31000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai SM3 1992-1996" 
+  },
+  { 
+    zoren: "ZRM1501093", 
+    oem: ["31110-4D600"], 
+    name: "Fuel Pump", 
+    car_maker: "KIA", 
+    applications: "KIA MPV VQ 2.7L, KIA Grand Carnival 2.7 3.5 3.8L 2005-2014" 
+  },
+  { 
+    zoren: "ZRM1501094 / ZRM1183087", 
+    oem: ["31110-2J400", "31110-2J600", "E9000M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA Borrego Mohave 3.8L V6 2008-2012" 
+  },
+  { 
+    zoren: "ZRM1163021", 
+    oem: ["31110-2S000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Kia Sportage 2.0 Diesel 2010-2013, Hyundai Tucson 2.0 Diesel 2009-2013" 
+  },
+  { 
+    zoren: "ZRM1183092", 
+    oem: ["31110-1R200"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Accent, KIA Rio III 2010-2017." 
+  },
+  { 
+    zoren: "ZRM1501079", 
+    oem: ["31110-2E960", "31110-1F980"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Tucson Sportage 2004-2010 DIESEL" 
+  },
+  { 
+    zoren: "ZRM1501099 / ZRM1293516", 
+    oem: ["31110-4Z000", "31110-4Z500", "WAITH SENSOR", "E9217M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe Sport 2.0T 2013-2017, Kia Sorento 3.3L 2014-2015" 
+  },
+  { 
+    zoren: "ZRM1501108", 
+    oem: ["31110-3K600"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "ACCENT 2005-2008, SANATA 1989-2015" 
+  },
+  { 
+    zoren: "ZRM1501110", 
+    oem: ["31110-A0000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Creta 1.6L 2015-2018" 
+  },
+  { 
+    zoren: "ZRM1501111 / ZRM1283007", 
+    oem: ["31110-D3500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Tucson 1.6L 2015-2016, Kia Sportage 2.4L 2017-2021" 
+  },
+  { 
+    zoren: "ZRM1501112", 
+    oem: ["31110-D7100"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai KIA Sportage / SEURPF116 / SEURPF119 2016-2020" 
+  },
+  { 
+    zoren: "ZRM1501097 / ZRM1183084", 
+    oem: ["31110-1D000", "2000-A81480"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA Carens III UN 2.0 2006-2010, KIA Carens III UN 2.0 CVVT 2009-2018" 
+  },
+  { 
+    zoren: "ZRM1501125", 
+    oem: ["31110-C7000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai I20 ACTIVE 2015-2021" 
+  },
+  { 
+    zoren: "ZRM1501123", 
+    oem: ["31110-F3500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra Forte 1.4L 1.6L 2.0L 2017-2020" 
+  },
+  { 
+    zoren: "ZRM1501124", 
+    oem: ["31110-J9500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Kona 1.6L/2.0L 2018-2020" 
+  },
+  { 
+    zoren: "ZRM1501137", 
+    oem: ["31110-D7000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Kia Sportage 2015-2019 1.6L, Hyundai Tucson 2015/06-2020/12 1.6L 2WD" 
+  },
+  { 
+    zoren: "ZRM1501155", 
+    oem: ["31110-C2500", "31110-D5500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA Optima, Hyundai Sonata 1.6L 2.0L 2.4 L 2015-2020" 
+  },
+  { 
+    zoren: "ZRM1293168", 
+    oem: ["31110-F9000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Yuena 1.4L 2016-2019" 
+  },
+  { 
+    zoren: "ZRM1501122", 
+    oem: ["31110-3J000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai IX55 Veracruz 3.0L 2006-2023 V6 24V DIESEL" 
+  },
+  { 
+    zoren: "ZRM1501139", 
+    oem: ["31110-D3100"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai TUCSON, KIA SPORTAGE 2015-" 
+  },
+  { 
+    zoren: "ZRM1501167", 
+    oem: ["31110-F0000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai ELANTRA 1.6L L4 2016-2022" 
+  },
+  { 
+    zoren: "ZRM1501172", 
+    oem: ["31110-B8500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe V6 3.3L 2013-2020" 
+  },
+  { 
+    zoren: "ZRM1501175", 
+    oem: ["31120-H6000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Accent 2018-2021" 
+  },
+  { 
+    zoren: "ZRM1501176", 
+    oem: ["31112-C6200", "31110-C6200", "31120-C6200", "DFG2311", "MM048", "809GE", "94460-C5000", "FHY21"], 
+    name: "Fuel Pump", 
+    car_maker: "KIA", 
+    applications: "Kia Sorento 2.0L/2.4L/3.3L 2016-2020" 
+  },
+  { 
+    zoren: "ZRM1501178", 
+    oem: ["31110-D3000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai KIA", 
+    applications: "Hyundai Tucson 1.6T 2015/06-2020/12, KIA Sportage 1.6T 2015/09-2021/12" 
+  },
+  { 
+    zoren: "ZRM1501180", 
+    oem: ["31110-C3500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Sonata 9th Generation 2015-2017 2.4L1.6T" 
+  },
+  { 
+    zoren: "ZRM1501169", 
+    oem: ["31110-AA000", "31112-AA000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Elantra 2.0L 2021-2023" 
+  },
+  { 
+    zoren: "ZRM1163006", 
+    oem: ["31110-2P900"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe 2009-2021, KIA Sorento 2009-2021 diesel" 
+  },
+  { 
+    zoren: "ZRM1163022", 
+    oem: ["31110-2W900"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai KIA", 
+    applications: "Hyundai Santa Fe 2012-2015, Kia Sorento 2012-2018 Diese" 
+  },
+  { 
+    zoren: "ZRM1283012", 
+    oem: ["31110-A9900"], 
+    name: "Fuel Pump", 
+    car_maker: "KIA", 
+    applications: "KIA Carnival 2015-2023 2.2L DIESEL" 
+  },
+  { 
+    zoren: "ZRM1183121", 
+    oem: ["31110-3J500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Veracruz 3.8L 2007-2012" 
+  },
+  { 
+    zoren: "ZRM1083103", 
+    oem: ["F01R00S406", "LRC181BA0-1335XG"], 
+    name: "Fuel Pump", 
+    car_maker: "BESTUNE", 
+    applications: "BESTUNE X40/B30/SENIA R7/JUMPAL A70" 
+  },
+  { 
+    zoren: "ZRM1501185", 
+    oem: ["31110-26350"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Santa Fe 2.4L 3.5L 2002-2006" 
+  },
+  { 
+    zoren: "ZRM1501186", 
+    oem: ["31110-4H000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai (import) H-1 Travel (TQ) 2.5 CRDI 2007-2015" 
+  },
+  { 
+    zoren: "ZRM1123022", 
+    oem: ["31110-B1000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Genesis 2015 -2016, Genesis G80 2017-2020" 
+  },
+  { 
+    zoren: "ZRM1283014", 
+    oem: ["31110-A9500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "KIA SEDONA 2015-2021" 
+  },
+  { 
+    zoren: "ZRM1433007", 
+    oem: ["31110-G3200", "31110-G3300"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai KIA Cerato 2018 -2021" 
+  },
+  { 
+    zoren: "ZRM1123008", 
+    oem: ["31110-3Q500", "E9036M", "SP3037M", "8644M", "P77064M"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Sonata 2011-2015 2.4L" 
+  },
+  { 
+    zoren: "ZRM15001193", 
+    oem: ["31110-B2500", "31111-B2000", "94460-B2000", "003-11782", "FG1898", "SP3303M"], 
+    name: "Fuel Pump", 
+    car_maker: "KIA", 
+    applications: "Kia Soul 2014 -2015 1.6L 2.0L" 
+  },
+  { 
+    zoren: "ZRM1501194", 
+    oem: ["31110-4N000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai EON 2011-2018" 
+  },
+  { 
+    zoren: "ZRM1501202", 
+    oem: ["31110-02500"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Prime MX, KIA VISTO, ATOS 2001-2012" 
+  },
+  { 
+    zoren: "ZRM1501208", 
+    oem: ["31110-H9000", "31120-H9000", "31110-F9000"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Yuena 1.4L 2016-2019" 
+  },
+  { 
+    zoren: "ZRM1123021", 
+    oem: ["31110-3R800"], 
+    name: "Fuel Pump", 
+    car_maker: "Hyundai", 
+    applications: "Hyundai Azera 14 2011-2014" 
+  },
+// TOYOTA
+  
 // ================= PART 2: SUZUKI, ISUZU, MITSUBISHI, GM, FORD =================
 const part2 = [
   // --- SUZUKI ---
@@ -929,3 +1351,4 @@ if (searchBtn && searchInput) {
     });
     searchBtn.click(); // Initial Load
 }
+
