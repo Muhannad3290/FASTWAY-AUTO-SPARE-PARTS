@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoren Inventory System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 class="app-title">
+        ⚡ Zoren Inventory System
+    </h1>
+
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">All Brands</button>
+        <button class="filter-btn" data-filter="Hyundai / Kia">Hyundai / Kia</button>
+        <button class="filter-btn" data-filter="Toyota">Toyota</button>
+        <button class="filter-btn" data-filter="Honda">Honda</button>
+        <button class="filter-btn" data-filter="Nissan">Nissan</button>
+        <button class="filter-btn" data-filter="Mazda">Mazda</button>
+        <button class="filter-btn" data-filter="Suzuki">Suzuki</button>
+        <button class="filter-btn" data-filter="Ford">Ford</button>
+        <button class="filter-btn" data-filter="Chevrolet">Chevrolet</button>
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="Search Zoren P/N, OEM, or Car Name...">
+        <button id="searchBtn">Search</button>
+    </div>
+
+    <div id="resultCount" style="color: white; margin-bottom: 10px;"></div>
+
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

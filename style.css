@@ -1,0 +1,179 @@
+/* --- GENERAL STYLING --- */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    min-height: 100vh;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+    color: #333;
+}
+
+h1.app-title {
+    color: white;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 28px;
+    text-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+/* --- FILTER BUTTONS --- */
+.filter-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+    max-width: 800px;
+}
+
+.filter-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.filter-btn.active {
+    background: #fff;
+    color: #1e3c72;
+    font-weight: bold;
+    border-color: #fff;
+}
+
+/* --- SEARCH BOX --- */
+.search-container {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    width: 100%;
+    max-width: 600px;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 16px;
+    outline: none;
+}
+
+input[type="text"]:focus {
+    border-color: #1e3c72;
+}
+
+button#searchBtn {
+    background-color: #1e3c72;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button#searchBtn:hover {
+    background-color: #162b55;
+}
+
+/* --- RESULT CARD --- */
+#result {
+    width: 100%;
+    max-width: 700px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+    border-left: 6px solid #1e3c72;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.product-card h3 {
+    margin-top: 0;
+    color: #1e3c72;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+/* GRID LAYOUT */
+.info-row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    margin-bottom: 10px;
+    align-items: start;
+}
+
+.label {
+    font-weight: 700;
+    color: #666;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+.value {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.5;
+}
+
+/* OEM LIST */
+ul.oem-list {
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+ul.oem-list li {
+    background: #f1f1f1;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Consolas', monospace;
+    font-size: 14px;
+    color: #c0392b;
+    font-weight: bold;
+    border: 1px solid #ddd;
+}
+
+/* HIGHLIGHT */
+.highlight {
+    background-color: #fff176;
+    color: #000;
+    padding: 0 2px;
+}
+
+.no-result {
+    text-align: center;
+    color: white;
+    font-size: 18px;
+    opacity: 0.8;
+}
