@@ -737,154 +737,195 @@ const isuzuPageData = [
     applications: "HUMMER H2 2003" 
   }
 ];
-// ================= PART 4: MERGE AND SEARCH LOGIC =================
-// This block MUST come after all data parts (part1, part2, balancedData)
+// 1. IMPORT FIREBASE (MUST BE AT THE TOP)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-document.addEventListener("DOMContentLoaded", function() {
+// 2. CONFIGURE FIREBASE (YOUR KEYS)
+const firebaseConfig = {
+    apiKey: "AIzaSyBqkMI_VD9r1cZg9gXT4nfNRb-JMOKfydA",
+    authDomain: "fastway-autospare-parts.firebaseapp.com",
+    projectId: "fastway-autospare-parts",
+    storageBucket: "fastway-autospare-parts.firebasestorage.app",
+    messagingSenderId: "299025345282",
+    appId: "1:299025345282:web:1f1d6c02742e7d62ffb01b",
+    measurementId: "G-1LX779NZBE"
+};
+
+// Initialize Cloud Connection
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+console.log("Firebase Connected Successfully");
+
+// ======================================================
+// 3. YOUR STATIC DATA (PASTE YOUR HUGE LISTS HERE)
+// ======================================================
+
+// *** PASTE const part1 = [...] HERE ***
+
+// *** PASTE const part2 = [...] HERE ***
+
+// *** PASTE const balancedData = [...] HERE ***
+
+// *** PASTE const isuzuPageData = [...] HERE ***
+
+
+// COMBINE ALL STATIC DATA
+// (Make sure you pasted the lists above, otherwise this line will break!)
+const staticDatabase = [
+    ...part1, 
+    ...part2, 
+    ...balancedData, 
+    ...isuzuPageData
+];
+
+// ======================================================
+// 4. THE LOGIC (CLOUD + SEARCH)
+// ======================================================
+
+let cloudData = []; // Stores new parts from internet
+
+// A. LISTEN FOR NEW DATA FROM CLOUD
+const q = query(collection(db, "inventory"), orderBy("createdAt", "desc"));
+onSnapshot(q, (snapshot) => {
+    cloudData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+    }));
+    console.log("New data received from cloud!", cloudData);
     
-    // 1. Combine all data parts into one master database
-    // We use 'concat' or the spread operator (...) to merge them
-    // If you named your lists differently, update the names here!
-    // 1. Combine all data parts into one master database
-    const database = [
-        ...part1, 
-        ...part2, 
-        ...balancedData,
-        ...isuzuPageData  // <--- ADD THIS!
-    ];
-
-    let currentFilter = "all";
-
-    // --- HELPER: HIGHLIGHT TEXT ---
-    function highlightMatch(text, query) {
-        if (!query || !text) return text;
-        const strText = text.toString(); 
-        const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const regex = new RegExp(`(${safeQuery})`, 'gi');
-        return strText.replace(regex, '<span class="highlight">$1</span>');
-    }
-
-    // --- SEARCH LOGIC ---
-    function searchParts(q) {
-        q = q.toLowerCase().trim();
-
-        return database.filter(item => {
-            // 1. Check Brand Filter
-            if (currentFilter !== "all") {
-                if (!item.car_maker.toLowerCase().includes(currentFilter.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            // 2. Check Search Text
-            if (!q) return true; 
-
-            // Search in OEM array
-            const inOem = item.oem.some(o => o.toLowerCase().includes(q));
-            
-            // Search in other fields (with safety checks)
-            const inZoren = item.zoren ? item.zoren.toLowerCase().includes(q) : false;
-            const inName = item.name ? item.name.toLowerCase().includes(q) : false;
-            const inSearch = item.search ? item.search.toLowerCase().includes(q) : false;
-            const inApp = item.applications ? item.applications.toLowerCase().includes(q) : false;
-
-            return inOem || inZoren || inName || inSearch || inApp;
-        });
-    }
-
-    // --- RENDER RESULTS ---
-    function showResult(results, query) {
-        const box = document.getElementById("result");
-        const countBox = document.getElementById("resultCount");
-        
-        if (!box) return; 
-
-        box.innerHTML = ""; 
-
-        // Update Result Count
-        if(countBox) {
-            if(results.length > 0) {
-                countBox.innerText = `Showing ${results.length} Result(s)`;
-            } else {
-                countBox.innerText = "";
-            }
-        }
-
-        if (results.length === 0) {
-            box.innerHTML = "<h3 class='no-result'>No Products Found</h3>";
-            return;
-        }
-
-        results.forEach(p => {
-            // Generate OEM List
-            let oemHtml = `<ul class="oem-list">`;
-            p.oem.forEach(num => {
-                const hNum = highlightMatch(num, query);
-                oemHtml += `<li>${hNum}</li>`;
-            });
-            oemHtml += `</ul>`;
-
-            const hName = highlightMatch(p.name, query);
-            const hZoren = highlightMatch(p.zoren, query);
-            const hMaker = highlightMatch(p.car_maker, query);
-            const hApp = highlightMatch(p.applications, query);
-
-            const cardHtml = `
-                <div class="product-card">
-                    <h3>${hName}</h3>
-                    <div class="info-row">
-                        <span class="label">Zoren P/N:</span>
-                        <span class="value"><b>${hZoren}</b></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Maker:</span>
-                        <span class="value">${hMaker}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Application:</span>
-                        <span class="value">${hApp}</span>
-                    </div>
-                    <div class="info-row" style="margin-top:10px;">
-                        <span class="label">OEM List:</span>
-                        <span class="value">${oemHtml}</span>
-                    </div>
-                </div>
-            `;
-            box.innerHTML += cardHtml;
-        });
-    }
-
-    // --- EVENT LISTENERS ---
-    const searchBtn = document.getElementById("searchBtn");
+    // Refresh the display immediately
     const searchInput = document.getElementById("searchInput");
-    const filterBtns = document.querySelectorAll(".filter-btn");
-
-    // Filter Buttons
-    filterBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            filterBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-            currentFilter = btn.getAttribute("data-filter");
-            searchBtn.click(); // Re-run search with new filter
-        });
-    });
-
-    // Search Input
-    if (searchBtn && searchInput) {
-        searchBtn.onclick = function () {
-            const q = searchInput.value.trim();
-            const results = searchParts(q);
-            showResult(results, q);
-        };
-
-        searchInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                searchBtn.click();
-            }
-        });
-        
-        // Load all data initially
-        searchBtn.click();
+    if(searchInput) {
+        const query = searchInput.value.trim();
+        // Merge Cloud Data + Static Data
+        const combined = [...cloudData, ...staticDatabase];
+        renderResults(searchLogic(combined, query), query);
     }
 });
 
+// B. SAVE DATA TO CLOUD (The "Add" Button)
+const saveBtn = document.getElementById("savePartBtn");
+if(saveBtn) {
+    saveBtn.addEventListener("click", async () => {
+        const zoren = document.getElementById("inZoren").value;
+        const oem = document.getElementById("inOem").value;
+        const maker = document.getElementById("inMaker").value;
+        const app = document.getElementById("inApp").value;
+
+        if(!zoren || !maker) {
+            alert("Please fill in Zoren Number and Car Maker!");
+            return;
+        }
+
+        saveBtn.innerText = "Saving...";
+        
+        try {
+            // Send to Google Cloud
+            await addDoc(collection(db, "inventory"), {
+                zoren: zoren,
+                oem: oem.split(",").map(s => s.trim()), // Converts "123, 456" to List
+                name: "Fuel Pump (New)",
+                car_maker: maker,
+                applications: app,
+                createdAt: Timestamp.now()
+            });
+
+            alert("Saved Permanently to Website!");
+            document.getElementById("addModal").style.display = "none";
+            
+            // Clear form
+            document.getElementById("inZoren").value = "";
+            document.getElementById("inOem").value = "";
+            document.getElementById("inMaker").value = "";
+            document.getElementById("inApp").value = "";
+
+        } catch (e) {
+            console.error("Error:", e);
+            alert("Error saving. Check console.");
+        }
+        saveBtn.innerText = "Save Permanently";
+    });
+}
+
+// C. SEARCH FUNCTION
+function searchLogic(data, q) {
+    q = q.toLowerCase().trim();
+    return data.filter(item => {
+        if (!q) return true; 
+        
+        // Safe Checks
+        const inOem = item.oem ? item.oem.some(o => o.toLowerCase().includes(q)) : false;
+        const inZoren = item.zoren ? item.zoren.toLowerCase().includes(q) : false;
+        const inName = item.name ? item.name.toLowerCase().includes(q) : false;
+        const inApp = item.applications ? item.applications.toLowerCase().includes(q) : false;
+        const inMaker = item.car_maker ? item.car_maker.toLowerCase().includes(q) : false;
+
+        return inOem || inZoren || inName || inApp || inMaker;
+    });
+}
+
+// D. DISPLAY FUNCTION
+function highlightMatch(text, query) {
+    if (!query || !text) return text;
+    const strText = text.toString(); 
+    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const regex = new RegExp(`(${safeQuery})`, 'gi');
+    return strText.replace(regex, '<span class="highlight">$1</span>');
+}
+
+function renderResults(results, query) {
+    const box = document.getElementById("result");
+    const countBox = document.getElementById("resultCount");
+    if (!box) return; 
+    box.innerHTML = ""; 
+
+    if(countBox) countBox.innerText = results.length > 0 ? `Showing ${results.length} Result(s)` : "";
+
+    if (results.length === 0) {
+        box.innerHTML = "<h3 class='no-result'>No Products Found</h3>";
+        return;
+    }
+
+    results.forEach(p => {
+        let oemHtml = `<ul class="oem-list">`;
+        if(Array.isArray(p.oem)) {
+            p.oem.forEach(num => oemHtml += `<li>${highlightMatch(num, query)}</li>`);
+        }
+        oemHtml += `</ul>`;
+
+        const cardHtml = `
+            <div class="product-card">
+                <h3>${highlightMatch(p.name, query)}</h3>
+                <div class="info-row"><span class="label">Zoren P/N:</span><span class="value"><b>${highlightMatch(p.zoren, query)}</b></span></div>
+                <div class="info-row"><span class="label">Maker:</span><span class="value">${highlightMatch(p.car_maker, query)}</span></div>
+                <div class="info-row"><span class="label">Application:</span><span class="value">${highlightMatch(p.applications, query)}</span></div>
+                <div class="info-row" style="margin-top:10px;"><span class="label">OEM List:</span><span class="value">${oemHtml}</span></div>
+            </div>
+        `;
+        box.innerHTML += cardHtml;
+    });
+}
+
+// E. UI EVENTS (Modal & Search)
+const modal = document.getElementById("addModal");
+const openBtn = document.getElementById("openAddModal");
+const closeBtn = document.getElementById("closeModalBtn");
+
+if(openBtn) openBtn.onclick = () => modal.style.display = "block";
+if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+
+const searchBtn = document.getElementById("searchBtn");
+const searchInput = document.getElementById("searchInput");
+
+if (searchBtn && searchInput) {
+    searchBtn.onclick = function () {
+        const q = searchInput.value.trim();
+        const combined = [...cloudData, ...staticDatabase];
+        renderResults(searchLogic(combined, q), q);
+    };
+    searchInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") searchBtn.click();
+    });
+    searchBtn.click(); // Initial Load
+}
