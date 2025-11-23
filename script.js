@@ -1,15 +1,8 @@
-// 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
+// ==========================================
+// 1. DATA SECTION (PLACEHOLDER)
+// ==========================================
 
-  // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
-  // Example format:
-
-  // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
 const partsData = [
-
-  const partsData =[
-  // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
-  // Example format:
-// --- HYUNDAI / KIA (Updated & Verified) ---
   { 
     zoren: "ZRM0003011", 
     oem: ["31110-09000", "E8678M"], 
@@ -6490,7 +6483,21 @@ const partsData = [
 
 
 
-];
+    // !!! PASTE YOUR FULL LIST OF DATA HERE !!!
+    // Keep this structure:
+    /*
+    {
+      "zoren_no": "ZRM0003011",
+      "oem_no": "31110-09000",
+      "car_maker": "Hyundai",
+      "applications": "HYUNDAI SONATA",
+      "source": "34"
+    },
+    */
+    // ... paste all your rows here ...
+]; 
+
+// ==========================================
 // 2. LOGIC SECTION (CODES)
 // ==========================================
 
@@ -6563,5 +6570,3 @@ if (typeof partsData !== 'undefined' && partsData.length > 0) {
 } else {
     console.log("Waiting for data to be pasted...");
 }
-
-
