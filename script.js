@@ -4,7 +4,6 @@ const partsData = [
   // Example format:
 
   // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
-const partsData = [
   // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
   // Example format:
 // --- HYUNDAI / KIA (Updated & Verified) ---
@@ -6583,7 +6582,7 @@ const db = firebase.firestore();
 // ==========================================
 // Paste your full list here ONE TIME to upload it to the cloud.
 const partsDataToUpload = [ // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
-const partsData = [
+
   // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
   // Example format:
 // --- HYUNDAI / KIA (Updated & Verified) ---
@@ -13263,5 +13262,6 @@ function uploadBulkData() {
     
     alert("Upload started! Watch the Console (F12) for progress.");
 }
+
 
 
