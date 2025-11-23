@@ -1,5 +1,5 @@
 // ==========================================
-// 1. DATA SECTION (PLACEHOLDER)
+// 1. DATA SECTION
 // ==========================================
 
 const partsData = [
@@ -6483,90 +6483,103 @@ const partsData = [
 
 
 
-    // !!! PASTE YOUR FULL LIST OF DATA HERE !!!
-    // Keep this structure:
-    /*
-    {
-      "zoren_no": "ZRM0003011",
-      "oem_no": "31110-09000",
-      "car_maker": "Hyundai",
-      "applications": "HYUNDAI SONATA",
-      "source": "34"
-    },
-    */
-    // ... paste all your rows here ...
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // PASTE YOUR FULL JSON DATA HERE
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    
+    // Example (You can keep or delete this):
+    
 ]; 
 
 // ==========================================
-// 2. LOGIC SECTION (CODES)
+// 2. SMART DATA FIXER (Solves the Missing Data Issue)
 // ==========================================
 
-// DOM Elements
+function getSafeData(part) {
+    // This function checks ALL possible spellings of your column names
+    
+    // 1. Find Zoren Number
+    let zoren = part.zoren_no || part.zoren || part.ZOREN_NO || part.zoen_no || "";
+
+    // 2. Find OEM Number (Handles Arrays and Strings)
+    let oemRaw = part.oem_no || part.oem || part.OEM_NO || part.oem_number || "";
+    let oem = Array.isArray(oemRaw) ? oemRaw.join(", ") : oemRaw;
+
+    // 3. Find Car Maker
+    let maker = part.car_maker || part.CAR_MAKER || part.brand || "";
+
+    // 4. Find Applications
+    let app = part.applications || part.APPLICATIONS || part.application || "";
+
+    // 5. Source
+    let source = part.source || "";
+
+    return { zoren, oem, maker, app, source };
+}
+
+// ==========================================
+// 3. DISPLAY LOGIC
+// ==========================================
+
 const tableBody = document.getElementById('tableBody');
 const searchInput = document.getElementById('searchInput');
 const resultCount = document.getElementById('resultCount');
 
-// Function to render table rows
 function renderTable(data) {
-    tableBody.innerHTML = ''; // Clear current table
+    tableBody.innerHTML = ''; 
 
-    // Check if no results
     if (data.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No results found</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No results found</td></tr>';
         if(resultCount) resultCount.textContent = '0 records found';
         return;
     }
 
-    // Update result count (FIXED: Added backticks ` `)
     if(resultCount) resultCount.textContent = `Showing ${data.length} records`;
 
-    // Loop through data and create rows
-    data.forEach(part => {
-        const row = document.createElement('tr');
-        
-        // Create HTML for the row (Safe check || '' added to prevent "undefined")
-        row.innerHTML = `
-            <td>${part.zoren_no || ''}</td>
-            <td>${part.oem_no || ''}</td>
-            <td>${part.car_maker || ''}</td>
-            <td>${part.applications || ''}</td>
-            <td>${part.source || ''}</td>
+    // Use the Smart Fixer to display rows
+    const rows = data.map(rawPart => {
+        const part = getSafeData(rawPart); // Fix spelling
+        return `
+        <tr>
+            <td style="font-weight:bold; color:#2980b9;">${part.zoren}</td>
+            <td style="color:#c0392b; font-family:monospace;">${part.oem}</td>
+            <td>${part.maker}</td>
+            <td>${part.app}</td>
+            <td>${part.source}</td>
+        </tr>
         `;
-        
-        tableBody.appendChild(row);
-    });
+    }).join('');
+
+    tableBody.innerHTML = rows;
 }
 
-// Function to filter data
 function filterData(searchTerm) {
-    // Trim removes spaces from start/end, toLowerCase makes it case-insensitive
     const lowerTerm = searchTerm.toLowerCase().trim();
 
-    const filteredData = partsData.filter(part => {
-        // Check if search term exists in any of the relevant fields
-        // Added (|| "") to ensure code doesn't crash if a field is missing in your data
+    const filteredData = partsData.filter(rawPart => {
+        const part = getSafeData(rawPart); // Fix spelling before checking
+
         return (
-            (part.zoren_no || "").toLowerCase().includes(lowerTerm) ||
-            (part.oem_no || "").toLowerCase().includes(lowerTerm) ||
-            (part.car_maker || "").toLowerCase().includes(lowerTerm) ||
-            (part.applications || "").toLowerCase().includes(lowerTerm)
+            part.zoren.toLowerCase().includes(lowerTerm) ||
+            part.oem.toString().toLowerCase().includes(lowerTerm) ||
+            part.maker.toLowerCase().includes(lowerTerm) ||
+            part.app.toLowerCase().includes(lowerTerm)
         );
     });
 
     renderTable(filteredData);
 }
 
-// Event Listener for Search Input
+// Event Listener
 if(searchInput) {
     searchInput.addEventListener('keyup', (e) => {
         filterData(e.target.value);
     });
 }
 
-// Initial Render (Loads all data when page opens)
-// Checks if data exists first to prevent errors
+// Start
 if (typeof partsData !== 'undefined' && partsData.length > 0) {
     renderTable(partsData);
 } else {
-    console.log("Waiting for data to be pasted...");
+    console.log("Waiting for data...");
 }
