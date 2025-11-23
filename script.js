@@ -3,6 +3,11 @@
 // ==========================================
 
 const partsData = [
+  // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
+const partsData = [
+  // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
+  // Example format:
+// --- HYUNDAI / KIA (Updated & Verified) ---
   { 
     zoren: "ZRM0003011", 
     oem: ["31110-09000", "E8678M"], 
@@ -6483,54 +6488,51 @@ const partsData = [
 
 
 
+
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // PASTE YOUR FULL DATA HERE INSIDE THESE BRACKETS
+    // PASTE YOUR FULL JSON DATA HERE
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // (Keep the data you already pasted in your previous message)
     
+    // Example (Delete this line after pasting your data):
+    
+
 ]; 
 
 // ==========================================
-// 2. THE "SMART TRANSLATOR" (Fixes your specific data issues)
+// 2. SMART TRANSLATOR (The Fix)
 // ==========================================
+// This function forces your mixed data into a clean, readable format.
 
 function getSafeData(part) {
-    // This function forces the messy data into a clean format
-    // It checks every spelling variation you used in your file.
+    // 1. FIND ZOREN NUMBER (Checks all spellings you used)
+    let zoren = part.zoren_no || part.ZOREN_NO || part.zoren || part.zoen_no || "";
 
-    // 1. FIX ZOREN NUMBER
-    // Checks: zoren_no, zoren, ZOREN_NO, zoen_no
-    let zoren = part.zoren_no || part.zoren || part.ZOREN_NO || part.zoen_no || "";
-
-    // 2. FIX OEM NUMBER
-    // Checks: oem_no, oem, OEM_NO, oem_number
-    let rawOem = part.oem_no || part.oem || part.OEM_NO || part.oem_number || "";
+    // 2. FIND OEM NUMBER (Checks spellings + handles Lists vs Text)
+    let rawOem = part.oem_no || part.OEM_NO || part.oem || part.oem_number || "";
     let oem = "";
     
-    // If OEM is a list ["A", "B"], join it. If it's text "A", keep it.
+    // If OEM is a list ["A", "B"], join it. If it is text "A", keep it.
     if (Array.isArray(rawOem)) {
         oem = rawOem.join(", ");
     } else {
         oem = rawOem;
     }
 
-    // 3. FIX MAKER / BRAND
-    // Checks: car_maker, CAR_MAKER, brand
+    // 3. FIND MAKER (Checks car_maker, CAR_MAKER, brand)
     let maker = part.car_maker || part.CAR_MAKER || part.brand || "";
 
-    // 4. FIX APPLICATIONS
-    // Checks: applications, APPLICATIONS, application
+    // 4. FIND APPLICATION (Checks applications, APPLICATIONS, application)
     let app = part.applications || part.APPLICATIONS || part.application || "";
 
-    // 5. FIX SOURCE
+    // 5. FIND SOURCE
     let source = part.source || "";
 
-    // Return clean data
+    // Return a clean, standardized object
     return { zoren, oem, maker, app, source };
 }
 
 // ==========================================
-// 3. APP LOGIC
+// 3. LOGIC SECTION
 // ==========================================
 
 const tableBody = document.getElementById('tableBody');
@@ -6548,13 +6550,13 @@ function renderTable(data) {
 
     if(resultCount) resultCount.textContent = `Showing ${data.length} records`;
 
-    // Build the table rows using the Smart Translator
+    // Generate HTML rows using the Smart Translator
     const rows = data.map(rawPart => {
-        const part = getSafeData(rawPart); // <--- This cleans the data instantly
+        const part = getSafeData(rawPart); // <--- FIX APPLIED HERE
         return `
         <tr>
             <td style="font-weight:bold; color:#2980b9;">${part.zoren}</td>
-            <td style="color:#c0392b; font-family:monospace;">${part.oem}</td>
+            <td style="color:#c0392b; font-family:monospace; font-weight:bold;">${part.oem}</td>
             <td>${part.maker}</td>
             <td>${part.app}</td>
             <td>${part.source}</td>
@@ -6569,7 +6571,7 @@ function filterData(searchTerm) {
     const lowerTerm = searchTerm.toLowerCase().trim();
 
     const filteredData = partsData.filter(rawPart => {
-        // Clean the data BEFORE searching it
+        // Clean the data BEFORE searching it so it matches correctly
         const part = getSafeData(rawPart); 
 
         return (
@@ -6596,5 +6598,5 @@ if (typeof partsData !== 'undefined' && partsData.length > 0) {
     renderTable(partsData);
 } else {
     console.log("Waiting for data...");
-    if(tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Please paste your data into script.js</td></tr>';
+    if(tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Please paste your data into script.js</td></tr>';
 }
