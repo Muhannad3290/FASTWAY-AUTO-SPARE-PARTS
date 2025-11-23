@@ -6217,7 +6217,6 @@ const part = [
 ];
 // ======================================================
 // 1. MODULE IMPORTS (MUST BE AT THE VERY TOP)
-// Imports must be outside of the DOMContentLoaded listener.
 // ======================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -6225,11 +6224,11 @@ import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, Timestamp
 
 // ======================================================
 // 2. VITAL FIX: WAIT FOR HTML ELEMENTS TO LOAD
-// All main execution logic is now inside this listener.
+// All executable code must be inside this listener.
 // ======================================================
 document.addEventListener("DOMContentLoaded", () => {
     
-    // 2A. CONFIGURE FIREBASE (YOUR KEYS)
+    // 2A. CONFIGURE FIREBASE 
     const firebaseConfig = {
         apiKey: "AIzaSyBqkMI_VD9r1cZg9gXT4nfNRb-JMOKfydA",
         authDomain: "fastway-autospare-parts.firebaseapp.com",
@@ -6247,23 +6246,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     
     // ======================================================
-    // 3. YOUR STATIC DATA (PASTE YOUR HUGE LISTS HERE)
+    // 3. YOUR STATIC DATA (YOUR SINGLE COMBINED LIST)
     // ======================================================
 
-    // NOTE: PASTE YOUR ACTUAL LISTS HERE
-    const part1 = []; // *** PASTE const part1 = [...] HERE ***
-    const part2 = []; // *** PASTE const part2 = [...] HERE ***
-    const balancedData = []; // *** PASTE const balancedData = [...] HERE ***
-    const isuzuPageData = []; // *** PASTE const isuzuPageData = [...] HERE ***
+    // PASTE YOUR FULL, LARGE ARRAY OF PRODUCT OBJECTS HERE.
+    // The entire list must be between the square brackets [ ].
+    const part = [ 
+      // Example of your data:
+      { 
+        zoren: "ZRM0003011", 
+        oem: ["31110-09000", "E8678M"], 
+        name: "Fuel Pump Assembly", 
+        car_maker: "Hyundai", 
+        applications: "HYUNDAI SONATA 2.0 / KIA OPTIMA 2001-2005" 
+      },
+      // ... ALL THE REST OF YOUR PRODUCT DATA ... 
+    ]; 
 
 
-    // COMBINE ALL STATIC DATA
-    const staticDatabase = [
-        ...part1, 
-        ...part2, 
-        ...balancedData, 
-        ...isuzuPageData
-    ];
+    // FINAL FIX: This correctly defines the main data source using your single 'part' array.
+    const staticDatabase = [ ...part ]; 
 
     // ======================================================
     // 4. THE LOGIC (CLOUD + SEARCH)
@@ -6288,6 +6290,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const combined = [...cloudData, ...staticDatabase];
             renderResults(searchLogic(combined, query), query);
         }
+        
+        // Run an initial search on load to display all data
+        const searchBtn = document.getElementById("searchBtn");
+        if(searchBtn) searchBtn.click();
     });
 
     // B. SAVE DATA TO CLOUD (The "Add" Button)
@@ -6310,15 +6316,16 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Send to Google Cloud
                 await addDoc(collection(db, "inventory"), {
                     zoren: zoren,
-                    oem: oem.split(",").map(s => s.trim()), // Converts "123, 456" to List
-                    name: "Fuel Pump (New)",
+                    oem: oem.split(",").map(s => s.trim()), 
+                    name: "New Part", // Placeholder name, consider adding an input for this
                     car_maker: maker,
                     applications: app,
                     createdAt: Timestamp.now()
                 });
 
                 alert("Saved Permanently to Website!");
-                document.getElementById("addModal").style.display = "none";
+                const modal = document.getElementById("addModal");
+                if (modal) modal.style.display = "none";
                 
                 // Clear form
                 document.getElementById("inZoren").value = "";
@@ -6375,6 +6382,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         results.forEach(p => {
             let oemHtml = `<ul class="oem-list">`;
+            // Check if oem is an array before trying to iterate
             if(Array.isArray(p.oem)) {
                 p.oem.forEach(num => oemHtml += `<li>${highlightMatch(num, query)}</li>`);
             }
@@ -6398,13 +6406,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const openBtn = document.getElementById("openAddModal");
     const closeBtn = document.getElementById("closeModalBtn");
 
-    if(openBtn) openBtn.onclick = () => modal.style.display = "block";
-    if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+    if(openBtn && modal) openBtn.onclick = () => modal.style.display = "block";
+    if(closeBtn && modal) closeBtn.onclick = () => modal.style.display = "none";
 
     const searchBtn = document.getElementById("searchBtn");
     const searchInput = document.getElementById("searchInput");
 
-    // This section is now guaranteed to run after the HTML elements are loaded!
+    // This section now works!
     if (searchBtn && searchInput) {
         searchBtn.onclick = function () {
             const q = searchInput.value.trim();
@@ -6412,12 +6420,15 @@ document.addEventListener("DOMContentLoaded", () => {
             renderResults(searchLogic(combined, q), q);
         };
         searchInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") searchBtn.click();
+            // Check for Enter key to trigger search
+            if (event.key === "Enter") {
+                event.preventDefault(); // Stop the default form submission (if it was inside a <form>)
+                searchBtn.click();
+            }
         });
         
-        // Trigger initial load/search to display results on page load
-        searchBtn.click(); 
+        // Initial search is handled inside the onSnapshot listener for data reliability.
     }
 
-// VITAL FIX: Close the DOMContentLoaded listener block
+// END OF DOMContentLoaded LISTENER
 });
