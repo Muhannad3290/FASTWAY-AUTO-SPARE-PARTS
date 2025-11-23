@@ -4351,16 +4351,20 @@ function renderTable(data) {
 
     if (data.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No results found</td></tr>';
-        resultCount.textContent = '0 records found';
+        if(resultCount) resultCount.textContent = '0 records found';
         return;
     }
 
-    resultCount.textContent = Showing ${data.length} records;
+    // --- ERROR FIXED HERE ---
+    // Added backticks (`) around the text so ${data.length} works
+    if(resultCount) resultCount.textContent = `Showing ${data.length} records`;
+    // ------------------------
 
     data.forEach(part => {
         const row = document.createElement('tr');
         
         // Create HTML for the row
+        // Added safety checks to ensure data exists or shows empty string
         row.innerHTML = `
             <td>${part.zoren_no || ''}</td>
             <td>${part.oem_no || ''}</td>
@@ -4375,15 +4379,16 @@ function renderTable(data) {
 
 // Function to filter data
 function filterData(searchTerm) {
-    const lowerTerm = searchTerm.toLowerCase();
+    const lowerTerm = searchTerm.toLowerCase().trim(); // Added .trim() to clean up spaces
 
     const filteredData = partsData.filter(part => {
         // Check if search term exists in any of the relevant fields
+        // We use (field || "") to prevent errors if a field is null in your database
         return (
-            (part.zoren_no && part.zoren_no.toLowerCase().includes(lowerTerm)) ||
-            (part.oem_no && part.oem_no.toLowerCase().includes(lowerTerm)) ||
-            (part.car_maker && part.car_maker.toLowerCase().includes(lowerTerm)) ||
-            (part.applications && part.applications.toLowerCase().includes(lowerTerm))
+            (part.zoren_no || "").toLowerCase().includes(lowerTerm) ||
+            (part.oem_no || "").toLowerCase().includes(lowerTerm) ||
+            (part.car_maker || "").toLowerCase().includes(lowerTerm) ||
+            (part.applications || "").toLowerCase().includes(lowerTerm)
         );
     });
 
@@ -4391,9 +4396,16 @@ function filterData(searchTerm) {
 }
 
 // Event Listener for Search Input
-searchInput.addEventListener('keyup', (e) => {
-    filterData(e.target.value);
-});
+if(searchInput) {
+    searchInput.addEventListener('keyup', (e) => {
+        filterData(e.target.value);
+    });
+}
 
 // Initial Render
-renderTable(partsData);
+// Ensure partsData exists before running
+if (typeof partsData !== 'undefined') {
+    renderTable(partsData);
+} else {
+    console.error("Error: partsData is missing.");
+}
