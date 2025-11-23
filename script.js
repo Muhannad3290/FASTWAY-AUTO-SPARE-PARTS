@@ -1,5 +1,5 @@
 // ================= PART 1: ASIAN BRANDS =================
-const part1 = [
+const part = [
   // --- HYUNDAI / KIA ---
 { 
     zoren: "ZRM0003011", 
@@ -1893,12 +1893,11 @@ const part1 = [
     "OEM_NO": "17040-6HA0A",
     "CAR_MAKER": "NISSAN",
     "APPLICATIONS": "INFINITI Q50 2015-2019 / INFINITI Q60 2017-2018"
-  }
-  ];
+  },
 
 
 // ================= PART 2: SUZUKI, ISUZU, MITSUBISHI, GM, FORD =================
-const part2 = [
+
   
   {
     "ZOREN_NO": "ZRM1501148 / ZRM1133023",
@@ -2973,8 +2972,8 @@ const part2 = [
       "GMC SAVANA 2500 2010-2016",
       "GMC SAVANA 3500 2010-2016"
     ]
-  }
-  ];
+  },
+
 
 
 
@@ -2982,7 +2981,7 @@ const part2 = [
 
 
 // ================= PART 3: CHRYSLER, DODGE, JEEP & EUROPEAN BRANDS =================
-const balancedData = [
+
   // --- CHRYSLER / DODGE / JEEP / RAM ---
   
   {
@@ -6185,9 +6184,7 @@ const balancedData = [
       "Range Rover Sport 3.0 SD V6 2014-2018 4WD",
       "LAND ROVER Range Rover Evoque L538 2011-2020"
     ]
-  }
-];
-
+  },
   
 
 
@@ -6195,7 +6192,7 @@ const balancedData = [
   
 
   // ================= PART 4: ISUZU PAGE SPECIFIC DATA =================
-const isuzuPageData = [
+
   { 
     zoren: "ZRM0943095", 
     oem: ["E8400M", "P76555M", "SP4051M"], 
@@ -6218,220 +6215,209 @@ const isuzuPageData = [
     applications: "HUMMER H2 2003" 
   }
 ];
-// Add this line at the very top of your script.js
-document.addEventListener("DOMContentLoaded", () => {
-    
-    // ======================================================
-    // PASTE EVERYTHING BELOW THIS COMMENT:
-    // All your const lists (part1, part2, etc.)
-    // All your functions (searchLogic, renderResults, highlightMatch)
-    // All your event handlers (searchBtn.onclick, openBtn.onclick, etc.)
-    
-    // ... your existing code ...
-
-    // The event listener section you have:
-    const searchBtn = document.getElementById("searchBtn");
-    const searchInput = document.getElementById("searchInput");
-
-    if (searchBtn && searchInput) { 
-        // ... this code needs to be inside DOMContentLoaded ...
-    }
-    
-// Add this line at the very bottom of your script.js
-});
-// 1. IMPORT FIREBASE (MUST BE AT THE TOP)
+// ======================================================
+// 1. MODULE IMPORTS (MUST BE AT THE VERY TOP)
+// Imports must be outside of the DOMContentLoaded listener.
+// ======================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// 2. CONFIGURE FIREBASE (YOUR KEYS)
-const firebaseConfig = {
-    apiKey: "AIzaSyBqkMI_VD9r1cZg9gXT4nfNRb-JMOKfydA",
-    authDomain: "fastway-autospare-parts.firebaseapp.com",
-    projectId: "fastway-autospare-parts",
-    storageBucket: "fastway-autospare-parts.firebasestorage.app",
-    messagingSenderId: "299025345282",
-    appId: "1:299025345282:web:1f1d6c02742e7d62ffb01b",
-    measurementId: "G-1LX779NZBE"
-};
-
-// Initialize Cloud Connection
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-console.log("Firebase Connected Successfully");
 
 // ======================================================
-// 3. YOUR STATIC DATA (PASTE YOUR HUGE LISTS HERE)
+// 2. VITAL FIX: WAIT FOR HTML ELEMENTS TO LOAD
+// All main execution logic is now inside this listener.
 // ======================================================
-
-// *** PASTE const part1 = [...] HERE ***
-
-// *** PASTE const part2 = [...] HERE ***
-
-// *** PASTE const balancedData = [...] HERE ***
-
-// *** PASTE const isuzuPageData = [...] HERE ***
-
-
-// COMBINE ALL STATIC DATA
-// (Make sure you pasted the lists above, otherwise this line will break!)
-const staticDatabase = [
-    ...part1, 
-    ...part2, 
-    ...balancedData, 
-    ...isuzuPageData
-];
-
-// ======================================================
-// 4. THE LOGIC (CLOUD + SEARCH)
-// ======================================================
-
-let cloudData = []; // Stores new parts from internet
-
-// A. LISTEN FOR NEW DATA FROM CLOUD
-const q = query(collection(db, "inventory"), orderBy("createdAt", "desc"));
-onSnapshot(q, (snapshot) => {
-    cloudData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-    }));
-    console.log("New data received from cloud!", cloudData);
+document.addEventListener("DOMContentLoaded", () => {
     
-    // Refresh the display immediately
-    const searchInput = document.getElementById("searchInput");
-    if(searchInput) {
-        const query = searchInput.value.trim();
-        // Merge Cloud Data + Static Data
-        const combined = [...cloudData, ...staticDatabase];
-        renderResults(searchLogic(combined, query), query);
+    // 2A. CONFIGURE FIREBASE (YOUR KEYS)
+    const firebaseConfig = {
+        apiKey: "AIzaSyBqkMI_VD9r1cZg9gXT4nfNRb-JMOKfydA",
+        authDomain: "fastway-autospare-parts.firebaseapp.com",
+        projectId: "fastway-autospare-parts",
+        storageBucket: "fastway-autospare-parts.firebasestorage.app",
+        messagingSenderId: "299025345282",
+        appId: "1:299025345282:web:1f1d6c02742e7d62ffb01b",
+        measurementId: "G-1LX779NZBE"
+    };
+
+    // Initialize Cloud Connection
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    console.log("Firebase Connected Successfully");
+
+    
+    // ======================================================
+    // 3. YOUR STATIC DATA (PASTE YOUR HUGE LISTS HERE)
+    // ======================================================
+
+    // NOTE: PASTE YOUR ACTUAL LISTS HERE
+    const part1 = []; // *** PASTE const part1 = [...] HERE ***
+    const part2 = []; // *** PASTE const part2 = [...] HERE ***
+    const balancedData = []; // *** PASTE const balancedData = [...] HERE ***
+    const isuzuPageData = []; // *** PASTE const isuzuPageData = [...] HERE ***
+
+
+    // COMBINE ALL STATIC DATA
+    const staticDatabase = [
+        ...part1, 
+        ...part2, 
+        ...balancedData, 
+        ...isuzuPageData
+    ];
+
+    // ======================================================
+    // 4. THE LOGIC (CLOUD + SEARCH)
+    // ======================================================
+
+    let cloudData = []; // Stores new parts from internet
+
+    // A. LISTEN FOR NEW DATA FROM CLOUD
+    const q = query(collection(db, "inventory"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+        cloudData = snapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+        }));
+        console.log("New data received from cloud!", cloudData);
+        
+        // Refresh the display immediately
+        const searchInput = document.getElementById("searchInput");
+        if(searchInput) {
+            const query = searchInput.value.trim();
+            // Merge Cloud Data + Static Data
+            const combined = [...cloudData, ...staticDatabase];
+            renderResults(searchLogic(combined, query), query);
+        }
+    });
+
+    // B. SAVE DATA TO CLOUD (The "Add" Button)
+    const saveBtn = document.getElementById("savePartBtn");
+    if(saveBtn) {
+        saveBtn.addEventListener("click", async () => {
+            const zoren = document.getElementById("inZoren").value;
+            const oem = document.getElementById("inOem").value;
+            const maker = document.getElementById("inMaker").value;
+            const app = document.getElementById("inApp").value;
+
+            if(!zoren || !maker) {
+                alert("Please fill in Zoren Number and Car Maker!");
+                return;
+            }
+
+            saveBtn.innerText = "Saving...";
+            
+            try {
+                // Send to Google Cloud
+                await addDoc(collection(db, "inventory"), {
+                    zoren: zoren,
+                    oem: oem.split(",").map(s => s.trim()), // Converts "123, 456" to List
+                    name: "Fuel Pump (New)",
+                    car_maker: maker,
+                    applications: app,
+                    createdAt: Timestamp.now()
+                });
+
+                alert("Saved Permanently to Website!");
+                document.getElementById("addModal").style.display = "none";
+                
+                // Clear form
+                document.getElementById("inZoren").value = "";
+                document.getElementById("inOem").value = "";
+                document.getElementById("inMaker").value = "";
+                document.getElementById("inApp").value = "";
+
+            } catch (e) {
+                console.error("Error:", e);
+                alert("Error saving. Check console.");
+            }
+            saveBtn.innerText = "Save Permanently";
+        });
     }
-});
 
-// B. SAVE DATA TO CLOUD (The "Add" Button)
-const saveBtn = document.getElementById("savePartBtn");
-if(saveBtn) {
-    saveBtn.addEventListener("click", async () => {
-        const zoren = document.getElementById("inZoren").value;
-        const oem = document.getElementById("inOem").value;
-        const maker = document.getElementById("inMaker").value;
-        const app = document.getElementById("inApp").value;
+    // C. SEARCH FUNCTION
+    function searchLogic(data, q) {
+        q = q.toLowerCase().trim();
+        return data.filter(item => {
+            if (!q) return true; 
+            
+            // Safe Checks
+            const inOem = item.oem ? item.oem.some(o => o.toLowerCase().includes(q)) : false;
+            const inZoren = item.zoren ? item.zoren.toLowerCase().includes(q) : false;
+            const inName = item.name ? item.name.toLowerCase().includes(q) : false;
+            const inApp = item.applications ? item.applications.toLowerCase().includes(q) : false;
+            const inMaker = item.car_maker ? item.car_maker.toLowerCase().includes(q) : false;
 
-        if(!zoren || !maker) {
-            alert("Please fill in Zoren Number and Car Maker!");
+            return inOem || inZoren || inName || inApp || inMaker;
+        });
+    }
+
+    // D. DISPLAY FUNCTION
+    function highlightMatch(text, query) {
+        if (!query || !text) return text;
+        const strText = text.toString(); 
+        const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`(${safeQuery})`, 'gi');
+        return strText.replace(regex, '<span class="highlight">$1</span>');
+    }
+
+    function renderResults(results, query) {
+        const box = document.getElementById("result");
+        const countBox = document.getElementById("resultCount");
+        if (!box) return; 
+        box.innerHTML = ""; 
+
+        if(countBox) countBox.innerText = results.length > 0 ? `Showing ${results.length} Result(s)` : "";
+
+        if (results.length === 0) {
+            box.innerHTML = "<h3 class='no-result'>No Products Found</h3>";
             return;
         }
 
-        saveBtn.innerText = "Saving...";
-        
-        try {
-            // Send to Google Cloud
-            await addDoc(collection(db, "inventory"), {
-                zoren: zoren,
-                oem: oem.split(",").map(s => s.trim()), // Converts "123, 456" to List
-                name: "Fuel Pump (New)",
-                car_maker: maker,
-                applications: app,
-                createdAt: Timestamp.now()
-            });
+        results.forEach(p => {
+            let oemHtml = `<ul class="oem-list">`;
+            if(Array.isArray(p.oem)) {
+                p.oem.forEach(num => oemHtml += `<li>${highlightMatch(num, query)}</li>`);
+            }
+            oemHtml += `</ul>`;
 
-            alert("Saved Permanently to Website!");
-            document.getElementById("addModal").style.display = "none";
-            
-            // Clear form
-            document.getElementById("inZoren").value = "";
-            document.getElementById("inOem").value = "";
-            document.getElementById("inMaker").value = "";
-            document.getElementById("inApp").value = "";
-
-        } catch (e) {
-            console.error("Error:", e);
-            alert("Error saving. Check console.");
-        }
-        saveBtn.innerText = "Save Permanently";
-    });
-}
-
-// C. SEARCH FUNCTION
-function searchLogic(data, q) {
-    q = q.toLowerCase().trim();
-    return data.filter(item => {
-        if (!q) return true; 
-        
-        // Safe Checks
-        const inOem = item.oem ? item.oem.some(o => o.toLowerCase().includes(q)) : false;
-        const inZoren = item.zoren ? item.zoren.toLowerCase().includes(q) : false;
-        const inName = item.name ? item.name.toLowerCase().includes(q) : false;
-        const inApp = item.applications ? item.applications.toLowerCase().includes(q) : false;
-        const inMaker = item.car_maker ? item.car_maker.toLowerCase().includes(q) : false;
-
-        return inOem || inZoren || inName || inApp || inMaker;
-    });
-}
-
-// D. DISPLAY FUNCTION
-function highlightMatch(text, query) {
-    if (!query || !text) return text;
-    const strText = text.toString(); 
-    const safeQuery = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const regex = new RegExp(`(${safeQuery})`, 'gi');
-    return strText.replace(regex, '<span class="highlight">$1</span>');
-}
-
-function renderResults(results, query) {
-    const box = document.getElementById("result");
-    const countBox = document.getElementById("resultCount");
-    if (!box) return; 
-    box.innerHTML = ""; 
-
-    if(countBox) countBox.innerText = results.length > 0 ? `Showing ${results.length} Result(s)` : "";
-
-    if (results.length === 0) {
-        box.innerHTML = "<h3 class='no-result'>No Products Found</h3>";
-        return;
+            const cardHtml = `
+                <div class="product-card">
+                    <h3>${highlightMatch(p.name, query)}</h3>
+                    <div class="info-row"><span class="label">Zoren P/N:</span><span class="value"><b>${highlightMatch(p.zoren, query)}</b></span></div>
+                    <div class="info-row"><span class="label">Maker:</span><span class="value">${highlightMatch(p.car_maker, query)}</span></div>
+                    <div class="info-row"><span class="label">Application:</span><span class="value">${highlightMatch(p.applications, query)}</span></div>
+                    <div class="info-row" style="margin-top:10px;"><span class="label">OEM List:</span><span class="value">${oemHtml}</span></div>
+                </div>
+            `;
+            box.innerHTML += cardHtml;
+        });
     }
 
-    results.forEach(p => {
-        let oemHtml = `<ul class="oem-list">`;
-        if(Array.isArray(p.oem)) {
-            p.oem.forEach(num => oemHtml += `<li>${highlightMatch(num, query)}</li>`);
-        }
-        oemHtml += `</ul>`;
+    // E. UI EVENTS (Modal & Search)
+    const modal = document.getElementById("addModal");
+    const openBtn = document.getElementById("openAddModal");
+    const closeBtn = document.getElementById("closeModalBtn");
 
-        const cardHtml = `
-            <div class="product-card">
-                <h3>${highlightMatch(p.name, query)}</h3>
-                <div class="info-row"><span class="label">Zoren P/N:</span><span class="value"><b>${highlightMatch(p.zoren, query)}</b></span></div>
-                <div class="info-row"><span class="label">Maker:</span><span class="value">${highlightMatch(p.car_maker, query)}</span></div>
-                <div class="info-row"><span class="label">Application:</span><span class="value">${highlightMatch(p.applications, query)}</span></div>
-                <div class="info-row" style="margin-top:10px;"><span class="label">OEM List:</span><span class="value">${oemHtml}</span></div>
-            </div>
-        `;
-        box.innerHTML += cardHtml;
-    });
-}
+    if(openBtn) openBtn.onclick = () => modal.style.display = "block";
+    if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
 
-// E. UI EVENTS (Modal & Search)
-const modal = document.getElementById("addModal");
-const openBtn = document.getElementById("openAddModal");
-const closeBtn = document.getElementById("closeModalBtn");
+    const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("searchInput");
 
-if(openBtn) openBtn.onclick = () => modal.style.display = "block";
-if(closeBtn) closeBtn.onclick = () => modal.style.display = "none";
+    // This section is now guaranteed to run after the HTML elements are loaded!
+    if (searchBtn && searchInput) {
+        searchBtn.onclick = function () {
+            const q = searchInput.value.trim();
+            const combined = [...cloudData, ...staticDatabase];
+            renderResults(searchLogic(combined, q), q);
+        };
+        searchInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") searchBtn.click();
+        });
+        
+        // Trigger initial load/search to display results on page load
+        searchBtn.click(); 
+    }
 
-const searchBtn = document.getElementById("searchBtn");
-const searchInput = document.getElementById("searchInput");
-
-if (searchBtn && searchInput) {
-    searchBtn.onclick = function () {
-        const q = searchInput.value.trim();
-        const combined = [...cloudData, ...staticDatabase];
-        renderResults(searchLogic(combined, q), q);
-    };
-    searchInput.addEventListener("keypress", function(event) {
-        if (event.key === "Enter") searchBtn.click();
-    });
-    searchBtn.click(); // Initial Load
-}
-
-
-
-
+// VITAL FIX: Close the DOMContentLoaded listener block
+});
