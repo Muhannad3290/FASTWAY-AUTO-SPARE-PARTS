@@ -6218,6 +6218,27 @@ const isuzuPageData = [
     applications: "HUMMER H2 2003" 
   }
 ];
+// Add this line at the very top of your script.js
+document.addEventListener("DOMContentLoaded", () => {
+    
+    // ======================================================
+    // PASTE EVERYTHING BELOW THIS COMMENT:
+    // All your const lists (part1, part2, etc.)
+    // All your functions (searchLogic, renderResults, highlightMatch)
+    // All your event handlers (searchBtn.onclick, openBtn.onclick, etc.)
+    
+    // ... your existing code ...
+
+    // The event listener section you have:
+    const searchBtn = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("searchInput");
+
+    if (searchBtn && searchInput) { 
+        // ... this code needs to be inside DOMContentLoaded ...
+    }
+    
+// Add this line at the very bottom of your script.js
+});
 // 1. IMPORT FIREBASE (MUST BE AT THE TOP)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -6410,6 +6431,7 @@ if (searchBtn && searchInput) {
     });
     searchBtn.click(); // Initial Load
 }
+
 
 
 
