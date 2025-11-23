@@ -6260,7 +6260,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Ensure all your product objects are between the square brackets [ ].
     // ======================================================
 
-    const part = [ 
+  
       // --- HYUNDAI / KIA ---
      // ================= PART 1: ASIAN BRANDS =================
 const part = [
@@ -12690,3 +12690,4 @@ const part = [
 
 // END OF DOMContentLoaded LISTENER
 });
+
