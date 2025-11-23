@@ -1,9 +1,10 @@
 // ==========================================
 // 1. DATA SECTION
 // ==========================================
-
+// I have included the data structure here. 
+// PASTE YOUR FULL DATA LIST INSIDE THESE BRACKETS
 const partsData = [
-  // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
+ // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
 const partsData = [
   // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
   // Example format:
@@ -1159,139 +1160,139 @@ const partsData = [
   },
 
   {
-    "zoren_no": "ZRM1501163",
+    "ZOREN_NO": "ZRM1501163",
     "oem_no": "23210-BZ150",
     "car_maker": "TOYOTA",
     "applications": "AVANZA 1.5L 2011-2015 3SZVE"
   },
   {
-    "zoren_no": "ZR1501164",
+    "ZOREN_NO": "ZR1501164",
     "oem_no": "77020-52231, 292010-0014, 292010-0013",
     "car_maker": "TOYOTA",
     "applications": "SIENTA 2005- 1NZFE"
   },
   {
-    "zoren_no": "ZRM1501171",
+    "ZOREN_NO": "ZRM1501171",
     "oem_no": "77010-0K200, 77010-0K201",
     "car_maker": "TOYOTA",
     "applications": "HILUX 4Runne 2GDFTV, 2015-2020 DIESEL"
   },
   {
-    "zoren_no": "ZRM1501166",
+    "ZOREN_NO": "ZRM1501166",
     "oem_no": "77020-05080",
     "car_maker": "TOYOTA",
     "applications": "Avensis T22 1.8L 2000- 2003"
   },
   {
-    "zoren_no": "ZRM1183068",
+    "ZOREN_NO": "ZRM1183068",
     "oem_no": "77020-47081, 77020-02C70",
     "car_maker": "TOYOTA",
     "applications": "PRIUS 04/2009-10/2015, PRIUS (PLUG-IN HYBRID) 01/2012-05/2015 2ZRFXE"
   },
   {
-    "zoren_no": "ZRM1183089",
+    "ZOREN_NO": "ZRM1183089",
     "oem_no": "77020-08070",
     "car_maker": "TOYOTA",
     "applications": "SIENNA 2010-2020 2GRFKS"
   },
   {
-    "zoren_no": "ZRM1203054",
+    "ZOREN_NO": "ZRM1203054",
     "oem_no": "0580313058, 77240-02050",
     "car_maker": "TOYOTA",
     "applications": "COROLLA 5/1997-10/2001 3ZZFE/4ZZFE"
   },
   {
-    "zoren_no": "ZRM1183146",
+    "ZOREN_NO": "ZRM1183146",
     "oem_no": "77020-26080",
     "car_maker": "TOYOTA",
     "applications": "HIACE 2019-2021 7GRFKS"
   },
   {
-    "zoren_no": "ZRM1183069",
+    "ZOREN_NO": "ZRM1183069",
     "oem_no": "77020-02270",
     "car_maker": "TOYOTA",
     "applications": "MATRIX 2008-2014 2AZFE"
   },
   {
-    "zoren_no": "ZRM1183159",
+    "ZOREN_NO": "ZRM1183159",
     "oem_no": "77020-F4040",
     "car_maker": "TOYOTA",
     "applications": "TOYOTA C-HR 2017- 2021 3ZRFAE"
   },
   {
-    "zoren_no": "ZRM1183167",
+    "ZOREN_NO": "ZRM1183167",
     "oem_no": "77020-02A00",
     "car_maker": "TOYOTA",
     "applications": "COROLLA MZEA12,ZRE212 2ZRFAE, 2019-2022"
   },
   {
-    "zoren_no": "ZRM1203063",
+    "ZOREN_NO": "ZRM1203063",
     "oem_no": "PE11-12-35X, 77020-WB001",
     "car_maker": "TOYOTA",
     "applications": "Yaris 1.5L, Yaris iA 1.5L 2015-2019"
   },
   {
-    "zoren_no": "ZRM1501197",
+    "ZOREN_NO": "ZRM1501197",
     "oem_no": "77020-05111",
     "car_maker": "TOYOTA",
     "applications": "AVENSIS 07/2003-10/2008 1AZFSE"
   },
   {
-    "zoren_no": "ZRM1501198",
+    "ZOREN_NO": "ZRM1501198",
     "oem_no": "77020-08031",
     "car_maker": "TOYOTA",
     "applications": "SIENNA 01/2003-11/2009 3MZFE"
   },
   {
-    "zoren_no": "ZRM1183199",
+    "ZOREN_NO": "ZRM1183199",
     "oem_no": "77020-12A60",
     "car_maker": "TOYOTA",
     "applications": "COROLLA 2019-2021, TOYOTA ALTIS 2019-2022, TOYOTA PRIUS 2015-2018, TOYOTA C-HR 2016-2018, COROLLA SPORT 2018-2020"
   },
   {
-    "zoren_no": "ZRM1501098, ZRM1183165",
+    "ZOREN_NO": "ZRM1501098, ZRM1183165",
     "oem_no": "77020-0R070",
     "car_maker": "TOYOTA",
     "applications": "HARRIER HEV 11/2021 - 2022, TOYOTA RAV4 11/2019- 2020"
   },
   {
-    "zoren_no": "ZRM1073004",
+    "ZOREN_NO": "ZRM1073004",
     "oem_no": "23210-BZ130",
     "car_maker": "TOYOTA",
     "applications": "Avanza F653 F654, Rush F700, 3SZVE 1NRVE 2NRVE"
   },
   {
-    "zoren_no": "ZRM1183095",
+    "ZOREN_NO": "ZRM1183095",
     "oem_no": "77020-60540",
     "car_maker": "TOYOTA",
     "applications": "LAND CRUISER 2007- 2015 1URFE, LEXUS LX570 URJ201 09/2015-, LEXUS LX450D/460/570 2007- 2015 URJ20, LEXUS LX450D/570 2007-2015 URJ201,VDJ201"
   },
   {
-    "zoren_no": "ZRM1501199",
+    "ZOREN_NO": "ZRM1501199",
     "oem_no": "77020-42240",
     "car_maker": "TOYOTA",
     "applications": "HARRIER 06/2020- M20AFKS, RAV4 2018-2020 A25AFKS"
   },
   {
-    "zoren_no": "ZRM1501200",
+    "ZOREN_NO": "ZRM1501200",
     "oem_no": "77020-F4030",
     "car_maker": "TOYOTA",
     "applications": "COROLLA 2019-2020 1ZRFE, C-HR 10/2016-2020 3ZRFA"
   },
   {
-    "zoren_no": "ZRM1501201",
+    "ZOREN_NO": "ZRM1501201",
     "oem_no": "77020-02C21",
     "car_maker": "TOYOTA",
     "applications": "COROLLA 1.8L 2019- 2022, C-HR 2016-2019 2ZRFXE"
   },
   {
-    "zoren_no": "ZRM1183178",
+    "ZOREN_NO": "ZRM1183178",
     "oem_no": "77020-0R060, 77020-0R061",
     "car_maker": "TOYOTA",
     "applications": "RAV4 2018-2020 A25AFXS"
   },
   {
-    "zoren_no": "ZRM1501195",
+    "ZOREN_NO": "ZRM1501195",
     "oem_no": "77020-48040",
     "car_maker": "TOYOTA",
     "applications": "LEXUS RX 1 1997-2003"
@@ -6489,70 +6490,33 @@ const partsData = [
 
 
 
-    // ---------------------------------------------------------
-    // PASTE YOUR FULL DATA LIST HERE (The huge list you have)
-    // ---------------------------------------------------------
-    // (I have included the sample structure, just ensure your full list is here)
-    
-    // ... your thousands of lines of data ...
-    
-   
-    // ... make sure all your data is closed correctly inside this array
+  // ... (Keep your existing huge list of data) ...
 ]; 
 
 // ==========================================
-// 2. SMART TRANSLATOR (FIXED FOR SPACES)
+// 2. SMART TRANSLATOR (The Fix)
 // ==========================================
+// This function makes sure the code understands your data
+// regardless of how you spelled the column names.
 
 function getSafeData(part) {
-    // 1. FIX ZOREN NUMBER
-    // Checks: zoren, zoren_no, ZOREN_NO, zoen_no, and "ZOREN NO" (with space)
-    let zoren = part.zoren || 
-                part.zoren_no || 
-                part.ZOREN_NO || 
-                part["ZOREN NO"] || // <--- FIXED: Reads keys with spaces
-                part.zoen_no || 
-                part.ZOEN_NO || 
-                "";
+    // 1. FIX ZOREN NUMBER (Checks all spelling variations)
+    let zoren = part.zoren || part.zoren_no || part.ZOREN_NO || part.zoen_no || part.ZOEN_NO || "";
 
-    // 2. FIX OEM NUMBER
-    // Checks: oem, oem_no, OEM_NO, "OEM NO", oem_number
-    let rawOem = part.oem || 
-                 part.oem_no || 
-                 part.OEM_NO || 
-                 part["OEM NO"] || // <--- FIXED: Reads keys with spaces
-                 part["OEM_NO"] ||
-                 part.oem_number || 
-                 "";
-                 
-    let oem = "";
-    
-    // If OEM is a list ["A", "B"], join it. If text, keep it.
-    if (Array.isArray(rawOem)) {
-        oem = rawOem.join(", ");
-    } else {
-        oem = rawOem;
-    }
+    // 2. FIX OEM NUMBER (Handles Arrays ["A","B"] and Strings "A")
+    let rawOem = part.oem || part.oem_no || part.OEM_NO || part.oem_number || "";
+    let oem = Array.isArray(rawOem) ? rawOem.join(", ") : rawOem;
 
     // 3. FIX CAR MAKER
-    // Checks: car_maker, CAR_MAKER, "CAR MAKER", brand
-    let maker = part.car_maker || 
-                part.CAR_MAKER || 
-                part["CAR MAKER"] || // <--- FIXED: Reads keys with spaces
-                part.brand || 
-                "";
+    let maker = part.car_maker || part.CAR_MAKER || part.brand || "";
 
     // 4. FIX APPLICATIONS
-    // Checks: applications, APPLICATIONS, application
-    let app = part.applications || 
-              part.APPLICATIONS || 
-              part.application || 
-              "";
+    let app = part.applications || part.APPLICATIONS || part.application || "";
 
     // 5. FIX SOURCE
     let source = part.source || "";
 
-    // Return clean data
+    // Return clean data so the search works
     return { zoren, oem, maker, app, source };
 }
 
@@ -6577,7 +6541,7 @@ function renderTable(data) {
 
     // Generate HTML rows using the Smart Translator
     const rows = data.map(rawPart => {
-        const part = getSafeData(rawPart); // <--- FIX APPLIED HERE
+        const part = getSafeData(rawPart); // Clean the data before showing it
         return `
         <tr>
             <td style="font-weight:bold; color:#2980b9;">${part.zoren}</td>
@@ -6593,13 +6557,14 @@ function renderTable(data) {
 }
 
 function filterData(searchTerm) {
+    // Convert search term to lower case and trim spaces
     const lowerTerm = searchTerm.toLowerCase().trim();
 
     const filteredData = partsData.filter(rawPart => {
-        // Translate data BEFORE searching
+        // IMPORTANT: Clean the data BEFORE searching it!
         const part = getSafeData(rawPart); 
 
-        // Check if search term exists in any column
+        // Check if search term matches any column
         return (
             part.zoren.toLowerCase().includes(lowerTerm) ||
             part.oem.toString().toLowerCase().includes(lowerTerm) ||
@@ -6611,7 +6576,7 @@ function filterData(searchTerm) {
     renderTable(filteredData);
 }
 
-// Event Listener
+// Event Listener - This makes the search happen when you type
 if(searchInput) {
     searchInput.addEventListener('keyup', (e) => {
         filterData(e.target.value);
@@ -6623,5 +6588,4 @@ if (typeof partsData !== 'undefined' && partsData.length > 0) {
     renderTable(partsData);
 } else {
     console.log("Waiting for data...");
-    if(tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Please paste your data into script.js</td></tr>';
 }
