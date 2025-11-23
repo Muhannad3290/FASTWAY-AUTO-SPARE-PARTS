@@ -501,6 +501,7 @@ const staticDatabase = [
 ];
 
 // ======================================================
+// ======================================================
 // 3. DOMContentLoaded: Entry Point
 // ======================================================
 document.addEventListener("DOMContentLoaded", () => {
@@ -517,65 +518,85 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     // Initialize Cloud Connection
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    console.log("Firebase Connected Successfully");
+    let db;
+    try {
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        console.log("Firebase Connected Successfully");
+    } catch (e) {
+        console.error("Firebase Connection Failed:", e);
+    }
 
     // ======================================================
-    // 4. SAFE DATA LOADER (Fixes "zoen_no" vs "zoren" issues)
+    // 4. UNIVERSAL DATA NORMALIZER (THE FIX)
+    // This forces all different data formats into ONE standard format
     // ======================================================
-    // This takes your rawData (the big list) and fixes the variable names
     const staticDatabase = (typeof rawData !== 'undefined' ? rawData : []).map(item => {
+        
+        // 1. Grab OEM from ANY possible key name
+        let rawOem = item.oem || item.oem_no || item.oem_number || item.OEM_NO || item.OEM || [];
+        let oemArray = [];
+
+        // 2. Force it into an Array
+        if (Array.isArray(rawOem)) {
+            oemArray = rawOem;
+        } else if (typeof rawOem === 'string') {
+            // Split by comma, slash, or space to separate multiple numbers
+            oemArray = rawOem.split(/[\s,/]+/).map(s => s.trim());
+        } else if (typeof rawOem === 'number') {
+            oemArray = [rawOem.toString()];
+        }
+
         return {
-            // 1. Fix Zoren Number (Handles 'zoren', 'zoen_no', 'zoren_no')
-            zoren: (item.zoren || item.zoen_no || item.zoren_no || "N/A").toString().toUpperCase(),
+            // Handle Zoren No variations
+            zoren: (item.zoren || item.zoen_no || item.zoren_no || item.ZOREN_NO || "N/A").toString().toUpperCase().trim(),
             
-            // 2. Fix Maker (Handles 'car_maker' vs 'brand')
-            car_maker: (item.car_maker || item.brand || "Unknown"),
+            // Handle Maker variations
+            car_maker: (item.car_maker || item.brand || item.CAR_MAKER || "Unknown").trim(),
             
-            // 3. Fix Applications (Handles 'applications' vs 'application')
-            applications: (item.applications || item.application || ""),
+            // Handle Application variations
+            applications: (item.applications || item.application || item.APPLICATIONS || "").trim(),
             
-            // 4. Name Default
-            name: item.name || "Fuel Pump",
+            // Default Name
+            name: (item.name || "Fuel Pump").trim(),
             
-            // 5. Fix OEM (Handles Array vs String)
-            // If it's already an array, keep it. If it's a string "123, 456", split it into an array.
-            oem: Array.isArray(item.oem) ? item.oem : 
-                 (item.oem_number ? item.oem_number.split(',').map(s => s.trim()) : [])
+            // The fixed OEM Array
+            oem: oemArray.filter(x => x && x.length > 1) // Remove empty or single char junk
         };
     });
 
-    let cloudData = []; // To store new parts from Firebase
+    let cloudData = []; // Store cloud parts here
 
-    // Hide the initial loading message
+    // Hide loading message
     const loadingMessage = document.getElementById("loadingMessage");
     if(loadingMessage) loadingMessage.style.display = 'none';
 
     // ======================================================
-    // 5. CORE FUNCTIONS
+    // 5. SEARCH FUNCTION (Updated for Array Searching)
     // ======================================================
-
-    // A. SEARCH FUNCTION
     function searchLogic(data, q) {
         if (!q) return data; 
-        q = q.toLowerCase().trim();
+        const lowerQ = q.toLowerCase().trim();
 
         return data.filter(item => {
-            const inZoren = item.zoren ? item.zoren.toLowerCase().includes(q) : false;
-            // Check if OEM exists and search inside it
-            const inOem = (item.oem && item.oem.length > 0) 
-                ? item.oem.some(o => o.toLowerCase().includes(q)) 
-                : false;
-            const inName = item.name ? item.name.toLowerCase().includes(q) : false;
-            const inApp = item.applications ? item.applications.toLowerCase().includes(q) : false;
-            const inMaker = item.car_maker ? item.car_maker.toLowerCase().includes(q) : false;
+            // Search Zoren (Exact or Partial)
+            if (item.zoren.toLowerCase().includes(lowerQ)) return true;
+            
+            // Search Car Maker
+            if (item.car_maker.toLowerCase().includes(lowerQ)) return true;
 
-            return inOem || inZoren || inName || inApp || inMaker;
+            // Search Applications (Description)
+            if (item.applications.toLowerCase().includes(lowerQ)) return true;
+
+            // Search INSIDE the OEM Array
+            // This checks EVERY number in the list for the search term
+            if (item.oem.some(num => num.toLowerCase().includes(lowerQ))) return true;
+
+            return false;
         });
     }
 
-    // B. HIGHLIGHT MATCHES IN TEXT
+    // Helper: Highlight Text
     function highlightMatch(text, query) {
         if (!query || !text) return text;
         const strText = text.toString(); 
@@ -584,57 +605,61 @@ document.addEventListener("DOMContentLoaded", () => {
         return strText.replace(regex, '<span class="highlight">$1</span>');
     }
 
-    // C. DISPLAY RESULTS
+    // ======================================================
+    // 6. RENDER RESULTS
+    // ======================================================
     function renderResults(results, query) {
         const box = document.getElementById("result");
         const countBox = document.getElementById("resultCount");
         if (!box) return; 
         box.innerHTML = ""; 
 
-        const resultCountText = results.length > 0 ? 
-            `Showing ${results.length} Result(s)` : 
-            "";
-
-        if(countBox) countBox.innerText = resultCountText;
+        // Update Count
+        if(countBox) {
+            countBox.innerText = results.length > 0 
+                ? `Found ${results.length} matches` 
+                : "No matches found";
+        }
 
         if (results.length === 0) {
-            box.innerHTML = "<div class='col-span-full p-10 bg-white rounded-xl shadow-md text-center text-xl text-red-500 font-bold'>❌ No Record Found.</div>";
+            box.innerHTML = `
+                <div class='col-span-full p-8 bg-red-50 rounded-xl border border-red-100 text-center'>
+                    <p class="text-xl text-red-500 font-bold">❌ No Record Found</p>
+                    <p class="text-gray-500 mt-2">Try searching for a partial number (e.g. "31110")</p>
+                </div>`;
             return;
         }
 
-        results.forEach(p => {
-            let oemHtml = `<ul class="oem-list flex flex-wrap gap-1">`;
-            if(Array.isArray(p.oem)) {
-                p.oem.forEach(num => oemHtml += `<li class="hover:bg-blue-200">${highlightMatch(num, query)}</li>`);
-            }
-            oemHtml += `</ul>`;
+        // Limit results for speed if query is empty (show first 50)
+        const displayData = (query === "") ? results.slice(0, 50) : results;
 
-            const isCloud = p.id ? `<span class="text-xs bg-red-100 text-red-700 py-1 px-2 rounded-full font-medium">CLOUD</span>` : '';
+        displayData.forEach(p => {
+            // Build OEM Badges
+            let oemHtml = `<div class="flex flex-wrap gap-2 mt-2">`;
+            p.oem.forEach(num => {
+                // Highlight match inside OEM number
+                oemHtml += `<span class="bg-blue-50 text-blue-700 text-xs font-mono px-2 py-1 rounded border border-blue-100">${highlightMatch(num, query)}</span>`;
+            });
+            oemHtml += `</div>`;
+
+            const isCloud = p.id ? `<span class="ml-2 text-[10px] bg-green-100 text-green-800 py-0.5 px-2 rounded-full">NEW</span>` : '';
 
             const cardHtml = `
-                <div class="product-card bg-white p-5 rounded-xl shadow-lg border border-gray-100">
-                    <div class="flex justify-between items-start mb-3">
-                         <h3 class="text-xl font-bold text-gray-800">${highlightMatch(p.name, query)}</h3>
-                         ${isCloud}
+                <div class="bg-white p-5 rounded-xl shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col">
+                    <div class="flex justify-between items-start mb-2">
+                         <h3 class="font-bold text-gray-800 text-lg">${highlightMatch(p.car_maker, query)}</h3>
+                         <span class="text-xs font-bold bg-gray-100 text-gray-600 px-2 py-1 rounded">${highlightMatch(p.zoren, query)}</span>
                     </div>
                     
-                    <div class="info-row border-t pt-2 mt-2">
-                        <span class="label">Zoren P/N:</span>
-                        <span class="value text-blue-600"><b>${highlightMatch(p.zoren, query)}</b></span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Maker:</span>
-                        <span class="value">${highlightMatch(p.car_maker, query)}</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="label">Application:</span>
-                        <span class="value text-right max-w-[70%]">${highlightMatch(p.applications, query)}</span>
-                    </div>
+                    <p class="text-sm text-gray-600 mb-3 line-clamp-2" title="${p.applications}">
+                        ${highlightMatch(p.applications, query)}
+                    </p>
                     
-                    <div class="mt-4 p-2 bg-gray-50 rounded-lg">
-                        <span class="label block text-sm font-semibold text-gray-700 mb-1">OEM List:</span>
+                    <div class="mt-auto pt-3 border-t border-gray-50">
+                        <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">OEM Numbers</span>
                         ${oemHtml}
                     </div>
+                    ${isCloud}
                 </div>
             `;
             box.innerHTML += cardHtml;
@@ -642,52 +667,61 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ======================================================
-    // 6. INITIAL RENDER & LISTENERS
+    // 7. INITIALIZE
     // ======================================================
 
-    // *** IMPORTANT: Render static data immediately ***
+    // 1. Render all data immediately
     renderResults(staticDatabase, ""); 
 
-    // A. LISTEN FOR NEW DATA FROM FIREBASE
-    // We use a try-catch block here in case of Network Errors
-    try {
-        const q = query(collection(db, "inventory"), orderBy("createdAt", "desc"));
-        onSnapshot(q, (snapshot) => {
-            cloudData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            console.log("Cloud data updated.");
-            
-            // Refresh search with new data
-            const searchInput = document.getElementById("searchInput");
-            const queryStr = searchInput ? searchInput.value.trim() : "";
-            const combined = [...cloudData, ...staticDatabase];
-            renderResults(searchLogic(combined, queryStr), queryStr);
-        }, (error) => {
-            console.warn("Network Error or Permission Denied (Firebase):", error);
-            // If Firebase fails (network error), we still have staticDatabase visible!
-        });
-    } catch (e) {
-        console.error("Firebase init error:", e);
-    }
-
-    // B. SEARCH EVENTS
+    // 2. Setup Search Listeners
     const searchBtn = document.getElementById("searchBtn");
     const searchInput = document.getElementById("searchInput");
 
-    if (searchBtn && searchInput) {
-        const performSearch = () => {
+    if (searchInput) {
+        const handleSearch = () => {
             const q = searchInput.value.trim();
             const combined = [...cloudData, ...staticDatabase];
             renderResults(searchLogic(combined, q), q);
         };
 
-        searchBtn.onclick = performSearch;
+        // Search on Type (Real-time)
+        searchInput.addEventListener("input", handleSearch);
+        
+        // Search on Enter
         searchInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") { e.preventDefault(); performSearch(); }
+            if (e.key === "Enter") { e.preventDefault(); handleSearch(); }
         });
-        // Live search (optional)
-        searchInput.addEventListener("input", performSearch);
+
+        // Search on Button Click
+        if (searchBtn) searchBtn.onclick = handleSearch;
+    }
+
+    // 3. Connect to Cloud (If available)
+    if (db) {
+        try {
+            const q = query(collection(db, "inventory"), orderBy("createdAt", "desc"));
+            onSnapshot(q, (snapshot) => {
+                cloudData = snapshot.docs.map(doc => {
+                    const d = doc.data();
+                    // Ensure cloud data also follows the correct structure
+                    let rawOem = d.oem || [];
+                    return {
+                        id: doc.id,
+                        zoren: (d.zoren || "").toUpperCase(),
+                        car_maker: d.car_maker || "",
+                        applications: d.applications || "",
+                        name: d.name || "Fuel Pump",
+                        oem: Array.isArray(rawOem) ? rawOem : [rawOem.toString()]
+                    };
+                });
+                
+                // Update display when cloud data arrives
+                const inputVal = searchInput ? searchInput.value.trim() : "";
+                const combined = [...cloudData, ...staticDatabase];
+                renderResults(searchLogic(combined, inputVal), inputVal);
+            });
+        } catch (err) {
+            console.log("Running in offline mode (Static Data Only)");
+        }
     }
 });
