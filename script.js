@@ -6560,6 +6560,4 @@ if (typeof partsData !== 'undefined' && partsData.length > 0) {
 } else {
     console.log("Waiting for data to be pasted...");
 }
-// ==========================================
-// 1. YOUR FIREBASE CONFIGURATION
-// ==========================================
+
