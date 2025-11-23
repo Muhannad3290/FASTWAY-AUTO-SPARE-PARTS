@@ -4,16 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Spare Parts Database Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="container">
+    <div id="background-tools"></div>
+
+    <div class="container glass-effect">
         <header>
-            <h1>Spare Parts Database</h1>
+            <div class="logo-area">
+                <i class="fa-solid fa-gears logo-icon"></i>
+                <h1>PartsFinder <span class="highlight">Pro</span></h1>
+            </div>
+            <p class="subtitle">Database Management System</p>
+            
             <div class="search-container">
-                <input type="text" id="searchInput" placeholder="Search by Zoren No, OEM, Car Maker, or Application...">
-                <span id="resultCount">Showing all records</span>
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search by Zoren No, OEM, or Car Maker...">
+                <span id="resultCount">Database Ready</span>
             </div>
         </header>
 
