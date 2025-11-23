@@ -3,38 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spare Parts Database Search</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Fastway Spare Parts (Local)</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div id="background-tools"></div>
-
-    <div class="container glass-effect">
+    <div class="main-container">
         <header>
-            <div class="logo-area">
-                <i class="fa-solid fa-gears logo-icon"></i>
-                <h1>PartsFinder <span class="highlight">Pro</span></h1>
-            </div>
-            <p class="subtitle">Database Management System</p>
+            <h1>Fastway Parts Inventory</h1>
             
-            <div class="search-container">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="searchInput" placeholder="Search by Zoren No, OEM, or Car Maker...">
-                <span id="resultCount">Database Ready</span>
+            <div class="header-controls">
+                <input type="text" id="searchInput" placeholder="Search (Part No, Name, Brand)...">
+                
+                <button class="add-btn" onclick="openAddModal()">+ Add New Part</button>
             </div>
+            
+            <div id="resultCount">Showing 0 records</div>
         </header>
 
         <div class="table-wrapper">
-            <table id="partsTable">
+            <table id="inventoryTable">
                 <thead>
                     <tr>
-                        <th width="15%">Zoren No.</th>
-                        <th width="20%">OEM No.</th>
-                        <th width="15%">Car Maker</th>
-                        <th width="40%">Applications</th>
-                        <th width="10%">Source</th>
+                        <th>Zoren No</th>
+                        <th>OEM No</th>
+                        <th>Car Maker</th>
+                        <th>Applications</th>
+                        <th>Source</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
@@ -43,6 +39,33 @@
         </div>
     </div>
 
+    <div id="partModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Add New Part</h2>
+            
+            <input type="hidden" id="editIndex">
+            
+            <label>Zoren No:</label>
+            <input type="text" id="inpZoren">
+            
+            <label>OEM No:</label>
+            <input type="text" id="inpOem">
+            
+            <label>Car Maker:</label>
+            <input type="text" id="inpMaker">
+            
+            <label>Applications:</label>
+            <textarea id="inpApp" rows="3"></textarea>
+            
+            <label>Source:</label>
+            <input type="text" id="inpSource">
+
+            <button class="save-btn" onclick="savePart()">Save Data</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+
 </body>
 </html>
