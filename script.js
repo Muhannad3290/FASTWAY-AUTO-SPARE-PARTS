@@ -5,6 +5,8 @@
 
   // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
 const partsData = [
+
+  const partsData =[
   // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
   // Example format:
 // --- HYUNDAI / KIA (Updated & Verified) ---
@@ -6561,4 +6563,5 @@ if (typeof partsData !== 'undefined' && partsData.length > 0) {
 } else {
     console.log("Waiting for data to be pasted...");
 }
+
 
