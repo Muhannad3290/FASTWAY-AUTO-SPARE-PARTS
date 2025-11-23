@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fastway Spare Parts (Local)</title>
+    <title>Fastway Spare Parts Search</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,56 +12,27 @@
         <header>
             <h1>Fastway Parts Inventory</h1>
             
-            <div class="header-controls">
-                <input type="text" id="searchInput" placeholder="Search (Part No, Name, Brand)...">
-                
-                <button class="add-btn" onclick="openAddModal()">+ Add New Part</button>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search by Zoren No, OEM, Brand, or Application...">
             </div>
             
-            <div id="resultCount">Showing 0 records</div>
+            <div id="resultCount">Loading data...</div>
         </header>
 
         <div class="table-wrapper">
-            <table id="inventoryTable">
+            <table id="partsTable">
                 <thead>
                     <tr>
-                        <th>Zoren No</th>
-                        <th>OEM No</th>
-                        <th>Car Maker</th>
-                        <th>Applications</th>
-                        <th>Source</th>
-                        <th>Actions</th>
+                        <th style="width: 15%;">Zoren No</th>
+                        <th style="width: 20%;">OEM No</th>
+                        <th style="width: 15%;">Car Maker</th>
+                        <th style="width: 40%;">Applications</th>
+                        <th style="width: 10%;">Source</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody">
                     </tbody>
             </table>
-        </div>
-    </div>
-
-    <div id="partModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2 id="modalTitle">Add New Part</h2>
-            
-            <input type="hidden" id="editIndex">
-            
-            <label>Zoren No:</label>
-            <input type="text" id="inpZoren">
-            
-            <label>OEM No:</label>
-            <input type="text" id="inpOem">
-            
-            <label>Car Maker:</label>
-            <input type="text" id="inpMaker">
-            
-            <label>Applications:</label>
-            <textarea id="inpApp" rows="3"></textarea>
-            
-            <label>Source:</label>
-            <input type="text" id="inpSource">
-
-            <button class="save-btn" onclick="savePart()">Save Data</button>
         </div>
     </div>
 
