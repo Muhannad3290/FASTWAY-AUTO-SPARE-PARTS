@@ -4338,7 +4338,8 @@ const partsData = [
 
 
 ]; 
-// END OF DATA
+// 2. LOGIC SECTION (CODES)
+// ==========================================
 
 // DOM Elements
 const tableBody = document.getElementById('tableBody');
@@ -4349,22 +4350,21 @@ const resultCount = document.getElementById('resultCount');
 function renderTable(data) {
     tableBody.innerHTML = ''; // Clear current table
 
+    // Check if no results
     if (data.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">No results found</td></tr>';
         if(resultCount) resultCount.textContent = '0 records found';
         return;
     }
 
-    // --- ERROR FIXED HERE ---
-    // Added backticks (`) around the text so ${data.length} works
+    // Update result count (FIXED: Added backticks ` `)
     if(resultCount) resultCount.textContent = `Showing ${data.length} records`;
-    // ------------------------
 
+    // Loop through data and create rows
     data.forEach(part => {
         const row = document.createElement('tr');
         
-        // Create HTML for the row
-        // Added safety checks to ensure data exists or shows empty string
+        // Create HTML for the row (Safe check || '' added to prevent "undefined")
         row.innerHTML = `
             <td>${part.zoren_no || ''}</td>
             <td>${part.oem_no || ''}</td>
@@ -4379,11 +4379,12 @@ function renderTable(data) {
 
 // Function to filter data
 function filterData(searchTerm) {
-    const lowerTerm = searchTerm.toLowerCase().trim(); // Added .trim() to clean up spaces
+    // Trim removes spaces from start/end, toLowerCase makes it case-insensitive
+    const lowerTerm = searchTerm.toLowerCase().trim();
 
     const filteredData = partsData.filter(part => {
         // Check if search term exists in any of the relevant fields
-        // We use (field || "") to prevent errors if a field is null in your database
+        // Added (|| "") to ensure code doesn't crash if a field is missing in your data
         return (
             (part.zoren_no || "").toLowerCase().includes(lowerTerm) ||
             (part.oem_no || "").toLowerCase().includes(lowerTerm) ||
@@ -4402,10 +4403,10 @@ if(searchInput) {
     });
 }
 
-// Initial Render
-// Ensure partsData exists before running
-if (typeof partsData !== 'undefined') {
+// Initial Render (Loads all data when page opens)
+// Checks if data exists first to prevent errors
+if (typeof partsData !== 'undefined' && partsData.length > 0) {
     renderTable(partsData);
 } else {
-    console.error("Error: partsData is missing.");
+    console.log("Waiting for data to be pasted...");
 }
