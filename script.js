@@ -6484,41 +6484,53 @@ const partsData = [
 
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // PASTE YOUR FULL JSON DATA HERE
+    // PASTE YOUR FULL DATA HERE INSIDE THESE BRACKETS
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    
-    // Example (You can keep or delete this):
+    // (Keep the data you already pasted in your previous message)
     
 ]; 
 
 // ==========================================
-// 2. SMART DATA FIXER (Solves the Missing Data Issue)
+// 2. THE "SMART TRANSLATOR" (Fixes your specific data issues)
 // ==========================================
 
 function getSafeData(part) {
-    // This function checks ALL possible spellings of your column names
-    
-    // 1. Find Zoren Number
+    // This function forces the messy data into a clean format
+    // It checks every spelling variation you used in your file.
+
+    // 1. FIX ZOREN NUMBER
+    // Checks: zoren_no, zoren, ZOREN_NO, zoen_no
     let zoren = part.zoren_no || part.zoren || part.ZOREN_NO || part.zoen_no || "";
 
-    // 2. Find OEM Number (Handles Arrays and Strings)
-    let oemRaw = part.oem_no || part.oem || part.OEM_NO || part.oem_number || "";
-    let oem = Array.isArray(oemRaw) ? oemRaw.join(", ") : oemRaw;
+    // 2. FIX OEM NUMBER
+    // Checks: oem_no, oem, OEM_NO, oem_number
+    let rawOem = part.oem_no || part.oem || part.OEM_NO || part.oem_number || "";
+    let oem = "";
+    
+    // If OEM is a list ["A", "B"], join it. If it's text "A", keep it.
+    if (Array.isArray(rawOem)) {
+        oem = rawOem.join(", ");
+    } else {
+        oem = rawOem;
+    }
 
-    // 3. Find Car Maker
+    // 3. FIX MAKER / BRAND
+    // Checks: car_maker, CAR_MAKER, brand
     let maker = part.car_maker || part.CAR_MAKER || part.brand || "";
 
-    // 4. Find Applications
+    // 4. FIX APPLICATIONS
+    // Checks: applications, APPLICATIONS, application
     let app = part.applications || part.APPLICATIONS || part.application || "";
 
-    // 5. Source
+    // 5. FIX SOURCE
     let source = part.source || "";
 
+    // Return clean data
     return { zoren, oem, maker, app, source };
 }
 
 // ==========================================
-// 3. DISPLAY LOGIC
+// 3. APP LOGIC
 // ==========================================
 
 const tableBody = document.getElementById('tableBody');
@@ -6528,7 +6540,7 @@ const resultCount = document.getElementById('resultCount');
 function renderTable(data) {
     tableBody.innerHTML = ''; 
 
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No results found</td></tr>';
         if(resultCount) resultCount.textContent = '0 records found';
         return;
@@ -6536,9 +6548,9 @@ function renderTable(data) {
 
     if(resultCount) resultCount.textContent = `Showing ${data.length} records`;
 
-    // Use the Smart Fixer to display rows
+    // Build the table rows using the Smart Translator
     const rows = data.map(rawPart => {
-        const part = getSafeData(rawPart); // Fix spelling
+        const part = getSafeData(rawPart); // <--- This cleans the data instantly
         return `
         <tr>
             <td style="font-weight:bold; color:#2980b9;">${part.zoren}</td>
@@ -6557,7 +6569,8 @@ function filterData(searchTerm) {
     const lowerTerm = searchTerm.toLowerCase().trim();
 
     const filteredData = partsData.filter(rawPart => {
-        const part = getSafeData(rawPart); // Fix spelling before checking
+        // Clean the data BEFORE searching it
+        const part = getSafeData(rawPart); 
 
         return (
             part.zoren.toLowerCase().includes(lowerTerm) ||
@@ -6577,9 +6590,11 @@ if(searchInput) {
     });
 }
 
-// Start
+// Initial Render
+// Checks if data exists before running to prevent crashes
 if (typeof partsData !== 'undefined' && partsData.length > 0) {
     renderTable(partsData);
 } else {
     console.log("Waiting for data...");
+    if(tableBody) tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Please paste your data into script.js</td></tr>';
 }
