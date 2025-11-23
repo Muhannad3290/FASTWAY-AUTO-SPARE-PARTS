@@ -4,7 +4,7 @@
 
 const partsData = [
   // 1. PASTE YOUR FULL JSON DATA HERE INSIDE THE BRACKETS
-const partsData = [
+
   // ... PASTE ALL JSON DATA FROM PREVIOUS MESSAGES HERE ...
   // Example format:
 // --- HYUNDAI / KIA (Updated & Verified) ---
@@ -1127,7 +1127,7 @@ const partsData = [
     oem: ["77020-42010", "SP9038M", "7717552020", "7724132060"], 
     name: "Fuel Pump", 
     car_maker: "Toyota", 
-    applications: "RAV 4 1994-2007" 
+    applications: "RAV 4 994-2007" 
   },
   { 
     zoren: "ZRM1501162", 
@@ -6490,44 +6490,36 @@ const partsData = [
 
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    // PASTE YOUR FULL JSON DATA HERE
+    // PASTE YOUR FULL JSON DATA HERE 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     
-    // Example (Delete this line after pasting your data):
-    
+    // (Keep your existing data list here)
 
 ]; 
 
 // ==========================================
-// 2. SMART TRANSLATOR (The Fix)
+// 2. SMART TRANSLATOR (THIS FIXES YOUR ISSUE)
 // ==========================================
-// This function forces your mixed data into a clean, readable format.
 
 function getSafeData(part) {
-    // 1. FIND ZOREN NUMBER (Checks all spellings you used)
-    let zoren = part.zoren_no || part.ZOREN_NO || part.zoren || part.zoen_no || "";
-
-    // 2. FIND OEM NUMBER (Checks spellings + handles Lists vs Text)
-    let rawOem = part.oem_no || part.OEM_NO || part.oem || part.oem_number || "";
-    let oem = "";
+    // This function checks ALL spelling variations so the search always works
     
-    // If OEM is a list ["A", "B"], join it. If it is text "A", keep it.
-    if (Array.isArray(rawOem)) {
-        oem = rawOem.join(", ");
-    } else {
-        oem = rawOem;
-    }
+    // 1. FIX ZOREN NUMBER (Checks 'zoren', 'zoren_no', 'ZOREN_NO')
+    let zoren = part.zoren || part.zoren_no || part.ZOREN_NO || part.zoen_no || "";
 
-    // 3. FIND MAKER (Checks car_maker, CAR_MAKER, brand)
-    let maker = part.car_maker || part.CAR_MAKER || part.brand || "";
+    // 2. FIX OEM NUMBER (Handles Lists ["A","B"] and Text "A")
+    let rawOem = part.oem || part.oem_no || part.OEM_NO || part.oem_number || "";
+    let oem = Array.isArray(rawOem) ? rawOem.join(", ") : rawOem;
 
-    // 4. FIND APPLICATION (Checks applications, APPLICATIONS, application)
-    let app = part.applications || part.APPLICATIONS || part.application || "";
+    // 3. FIX CAR MAKER
+    let maker = part.car_maker || part.brand || part.CAR_MAKER || "";
 
-    // 5. FIND SOURCE
+    // 4. FIX APPLICATIONS
+    let app = part.applications || part.application || part.APPLICATIONS || "";
+
+    // 5. FIX SOURCE
     let source = part.source || "";
 
-    // Return a clean, standardized object
     return { zoren, oem, maker, app, source };
 }
 
@@ -6542,7 +6534,7 @@ const resultCount = document.getElementById('resultCount');
 function renderTable(data) {
     tableBody.innerHTML = ''; 
 
-    if (!data || data.length === 0) {
+    if (data.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">No results found</td></tr>';
         if(resultCount) resultCount.textContent = '0 records found';
         return;
@@ -6550,9 +6542,9 @@ function renderTable(data) {
 
     if(resultCount) resultCount.textContent = `Showing ${data.length} records`;
 
-    // Generate HTML rows using the Smart Translator
+    // Use the Smart Translator to build rows
     const rows = data.map(rawPart => {
-        const part = getSafeData(rawPart); // <--- FIX APPLIED HERE
+        const part = getSafeData(rawPart); // <--- THIS IS THE FIX
         return `
         <tr>
             <td style="font-weight:bold; color:#2980b9;">${part.zoren}</td>
@@ -6571,7 +6563,7 @@ function filterData(searchTerm) {
     const lowerTerm = searchTerm.toLowerCase().trim();
 
     const filteredData = partsData.filter(rawPart => {
-        // Clean the data BEFORE searching it so it matches correctly
+        // Clean the data BEFORE checking the search
         const part = getSafeData(rawPart); 
 
         return (
@@ -6593,7 +6585,6 @@ if(searchInput) {
 }
 
 // Initial Render
-// Checks if data exists before running to prevent crashes
 if (typeof partsData !== 'undefined' && partsData.length > 0) {
     renderTable(partsData);
 } else {
