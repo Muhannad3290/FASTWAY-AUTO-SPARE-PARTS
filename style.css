@@ -1,102 +1,183 @@
-/* General Styles */
+/* 1. Modern Gradient Background */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f7f6;
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); /* Deep Professional Blue */
     margin: 0;
-    padding: 20px;
+    padding: 40px 20px;
     color: #333;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
 }
 
-.container {
+/* 2. Background Tools Animation System */
+#background-tools {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1; /* Behind everything */
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.floating-tool {
+    position: absolute;
+    bottom: -100px;
+    color: rgba(255, 255, 255, 0.08); /* Very subtle transparent white */
+    animation: floatUp linear infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-120vh) rotate(360deg); /* Float to top */
+        opacity: 0;
+    }
+}
+
+/* 3. Glassmorphism Container */
+.container.glass-effect {
     max-width: 1200px;
     margin: 0 auto;
-    background-color: #fff;
-    padding: 20px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.92); /* Semi-transparent white */
+    padding: 30px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3); /* Deep shadow */
+    backdrop-filter: blur(10px); /* The Blur Effect */
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
-/* Header & Search Bar */
+/* Header Styling */
 header {
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     text-align: center;
+}
+
+.logo-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+
+.logo-icon {
+    font-size: 2.5em;
+    color: #2980b9;
 }
 
 h1 {
     color: #2c3e50;
-    margin-bottom: 20px;
+    margin: 0;
+    font-size: 2.5em;
+    letter-spacing: -1px;
 }
 
+.highlight {
+    color: #e74c3c; /* Red highlight */
+}
+
+.subtitle {
+    color: #7f8c8d;
+    font-size: 1.1em;
+    margin-top: 0;
+}
+
+/* Search Bar Styling */
 .search-container {
     position: relative;
-    max-width: 600px;
-    margin: 0 auto;
+    max-width: 650px;
+    margin: 30px auto 10px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #999;
 }
 
 #searchInput {
     width: 100%;
-    padding: 15px;
+    padding: 18px 20px 18px 50px; /* Space for icon */
     font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 25px;
+    border: 2px solid #eee;
+    border-radius: 50px;
     outline: none;
-    transition: border-color 0.3s;
-    box-sizing: border-box;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
 #searchInput:focus {
     border-color: #3498db;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
 #resultCount {
     display: block;
-    margin-top: 10px;
-    color: #7f8c8d;
-    font-size: 0.9em;
+    margin-top: 12px;
+    color: #555;
+    font-size: 0.95em;
+    font-weight: 500;
 }
 
 /* Table Styling */
 .table-wrapper {
     overflow-x: auto;
+    border-radius: 8px;
+    margin-top: 20px;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    background-color: white;
+    overflow: hidden;
 }
 
 thead {
-    background-color: #34495e;
+    background: linear-gradient(90deg, #2c3e50, #34495e);
     color: #fff;
 }
 
 th, td {
-    padding: 12px 15px;
+    padding: 15px 18px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
 th {
     font-weight: 600;
     text-transform: uppercase;
-    font-size: 14px;
-    position: sticky;
-    top: 0;
+    font-size: 13px;
+    letter-spacing: 0.5px;
 }
 
 tbody tr:hover {
-    background-color: #f1f1f1;
+    background-color: #f8f9fa;
+    transform: scale(1.005); /* Slight zoom effect on hover */
+    transition: transform 0.1s ease;
 }
 
-/* Column specific styling */
-td:nth-child(1) { font-weight: bold; color: #2980b9; } /* Zoren No */
-td:nth-child(2) { font-family: monospace; color: #c0392b; } /* OEM No */
+/* Column Colors */
+td:nth-child(1) { font-weight: 700; color: #2980b9; } /* Zoren No */
+td:nth-child(2) { font-family: 'Consolas', monospace; color: #c0392b; background-color: #fffdfd; } /* OEM */
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
-    th, td {
-        padding: 10px;
-        font-size: 14px;
-    }
+    h1 { font-size: 2em; }
+    .container.glass-effect { padding: 15px; }
 }
