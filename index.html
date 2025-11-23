@@ -3,49 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zoren Parts Database</title>
+    <title>Spare Parts Database Search</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div class="container">
-        <div class="header-section">
-            <h1>Spare Parts Search Engine</h1>
-            <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Search Zoren P/N, OEM, or Car Model...">
-                <button id="addBtn" class="btn-primary">+ Add New Part</button>
+        <header>
+            <h1>Spare Parts Database</h1>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search by Zoren No, OEM, Car Maker, or Application...">
+                <span id="resultCount">Showing all records</span>
             </div>
-            <div id="status">Loading database...</div>
-        </div>
+        </header>
 
-        <div id="resultsGrid" class="grid"></div>
-    </div>
-
-    <div id="modal" class="modal hidden">
-        <div class="modal-content">
-            <h2>Add New Part</h2>
-            <form id="addForm">
-                <label>Zoren P/N (separate multiple with /)</label>
-                <input type="text" id="inZoren" required>
-                
-                <label>Car Maker</label>
-                <input type="text" id="inMaker" required>
-                
-                <label>OEM Numbers (comma separated)</label>
-                <input type="text" id="inOem">
-                
-                <label>Applications</label>
-                <textarea id="inApp" rows="4"></textarea>
-                
-                <div class="actions">
-                    <button type="button" id="closeBtn" class="btn-secondary">Cancel</button>
-                    <button type="submit" class="btn-primary">Save to Cloud</button>
-                </div>
-            </form>
+        <div class="table-wrapper">
+            <table id="partsTable">
+                <thead>
+                    <tr>
+                        <th width="15%">Zoren No.</th>
+                        <th width="20%">OEM No.</th>
+                        <th width="15%">Car Maker</th>
+                        <th width="40%">Applications</th>
+                        <th width="10%">Source</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
         </div>
     </div>
 
-    <script type="module" src="script.js"></script>
-
+    <script src="script.js"></script>
 </body>
 </html>
