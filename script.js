@@ -56,18 +56,24 @@ window.currentPartToEdit = null;
 window.sortColumn = localStorage.getItem('sortColumn') || 'zoren_no';
 window.sortDirection = localStorage.getItem('sortDirection') || 'asc';
 
-// Enable/Disable AI button based on API key presence
+// --- INITIAL DOM SETUP ---
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Firebase Initialization is now called here
+    initFirebase();
+
+    // 2. AI Button Setup
     const convertButton = document.getElementById('convert-image-btn');
     if (convertButton) {
         convertButton.disabled = API_KEY === "";
+        const statusElement = document.getElementById('conversion-status-image');
         if (API_KEY === "") {
-            document.getElementById('conversion-status-image').textContent = '⚠️ Please enter your Gemini API Key to enable AI conversion.';
+            statusElement.textContent = '⚠️ Please enter your Gemini API Key to enable AI conversion.';
         } else {
-            document.getElementById('conversion-status-image').textContent = 'Select up to 10 images.';
+            statusElement.textContent = 'Select up to 10 images.';
         }
     }
 });
+
 
 // --- UTILITY FUNCTIONS (TOAST) ---
 
@@ -109,17 +115,20 @@ const fileToBase64 = (file) => {
 
 const initFirebase = async () => {
     
-    if (!firebaseConfig) {
-        console.error("Firebase configuration is missing.");
-        document.getElementById('status-message').innerText = "ERROR: Firebase config missing. Cannot persist data.";
-        window.showToast("Firebase config missing. Data cannot be saved.", 'error');
+    // NOTE: Removed the 'if (!firebaseConfig)' check as it was causing issues or masking a timing problem.
+    // The configuration is clearly defined above and should be available now.
+
+    try {
+        const app = initializeApp(firebaseConfig);
+        getAnalytics(app); // Initialize analytics
+        db = getFirestore(app);
+        auth = getAuth(app);
+    } catch (e) {
+        console.error("Firebase initialization failed:", e);
+        document.getElementById('status-message').innerText = "ERROR: Firebase initialization failed.";
+        window.showToast("Firebase initialization failed.", 'error');
         return;
     }
-
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app); // Initialize analytics
-    db = getFirestore(app);
-    auth = getAuth(app);
     
     try {
         if (initialAuthToken) {
@@ -128,7 +137,7 @@ const initFirebase = async () => {
             await signInAnonymously(auth);
         }
     } catch (e) {
-        console.error("Initial Authentication failed:", e);
+        console.error("Initial Authentication failed, trying anonymous:", e);
         try {
             await signInAnonymously(auth);
         } catch(anonError) {
@@ -154,8 +163,6 @@ const initFirebase = async () => {
         }
     });
 };
-
-window.onload = initFirebase;
 
 // --- FIRESTORE DATA OPERATIONS ---
 
@@ -193,7 +200,7 @@ const listenForPartsData = () => {
             window.showToast("Error loading data: " + error.message, 'error');
         });
     } catch (e) {
-         console.error("Failed to set up listener:", e);
+           console.error("Failed to set up listener:", e);
     }
 };
 
@@ -219,8 +226,8 @@ const JSON_SCHEMA = {
 
 window.handleImageConversion = async () => {
     if (!API_KEY) {
-         window.showToast("Gemini API Key is missing. Cannot run AI conversion.", 'error');
-         return;
+           window.showToast("Gemini API Key is missing. Cannot run AI conversion.", 'error');
+           return;
     }
 
     const imageInput = document.getElementById('image-file-input');
@@ -279,7 +286,7 @@ window.handleImageConversion = async () => {
         statusBox.className = 'text-sm font-medium mt-1 text-red-500 min-h-4';
         window.showToast("AI image conversion failed.", 'error');
     } finally {
-        convertButton.disabled = false;
+        convertButton.disabled = API_KEY === ""; // Re-enable if key is present
         spinner.classList.add('hidden');
     }
 };
@@ -473,8 +480,8 @@ window.closeEditModal = () => {
 
 window.savePart = async () => {
     if (!isAuthReady || !userId || !db) {
-         window.showToast("Cannot save: Authentication not ready.", 'error');
-         return;
+           window.showToast("Cannot save: Authentication not ready.", 'error');
+           return;
     }
 
     const statusBox = document.getElementById('edit-status');
@@ -557,8 +564,8 @@ window.deletePart = async () => {
     window.closeDeleteModal(); 
 
     if (!partId || !isAuthReady || !userId || !db) {
-         window.showToast("Cannot delete: Authentication not ready.", 'error');
-         return;
+           window.showToast("Cannot delete: Authentication not ready.", 'error');
+           return;
     }
 
     try {
@@ -583,7 +590,15 @@ window.toggleImportPanel = (show) => {
         modal.classList.remove('active');
         document.getElementById('json-import-status').textContent = '';
         document.getElementById('json-prettify-status').textContent = '';
-        document.getElementById('conversion-status-image').textContent = '';
+        
+        const convertButton = document.getElementById('convert-image-btn');
+        const statusElement = document.getElementById('conversion-status-image');
+        if (API_KEY === "") {
+             statusElement.textContent = '⚠️ Please enter your Gemini API Key to enable AI conversion.';
+        } else {
+             statusElement.textContent = 'Select up to 10 images.';
+        }
+
         document.getElementById('image-file-input').value = ''; 
         document.getElementById('json-input').value = ''; 
         document.getElementById('image-conversion-spinner').classList.add('hidden');
@@ -717,7 +732,7 @@ window.searchAndRender = () => {
                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     </button>
                     <button onclick="showConfirmDelete('${part.id}', '${safeZorenNo}')" title="Delete Part" class="text-red-600 hover:text-red-800 transition transform hover:scale-110 focus:outline-none">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </div>
             </div>
