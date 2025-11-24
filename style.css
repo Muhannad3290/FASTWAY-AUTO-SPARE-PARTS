@@ -1,36 +1,112 @@
-body {
-    font-family: 'Segoe UI', Tahoma, sans-serif;
-    background-color: #f4f6f8;
-    padding: 20px;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+body { 
+    font-family: 'Inter', sans-serif; 
 }
-.main-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    background: white;
-    padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-header { margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 15px; }
-h1 { color: #2c3e50; margin: 0 0 15px 0; }
 
-#searchInput {
+/* Floating action button (FAB) */
+#import-toggle-btn, #add-part-btn {
+    position: fixed;
+    bottom: 2rem;
+    z-index: 50;
+}
+#import-toggle-btn { 
+    right: 2rem; 
+}
+/* Adjusted for smaller screen visibility */
+#add-part-btn { 
+    right: 8rem; 
+} 
+@media (min-width: 768px) { 
+    #add-part-btn { 
+        right: 15rem; 
+    } 
+}
+
+/* Custom modal backdrop */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 40;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    /* Simple fade-in transition */
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
 }
-#resultCount { margin-top: 10px; color: #777; font-weight: bold; }
+.modal-backdrop.active {
+    display: flex;
+    opacity: 1;
+}
+/* Modal content slide-in effect */
+.modal-backdrop.active > div {
+    transform: scale(1);
+    opacity: 1;
+}
+.modal-backdrop > div {
+    transform: scale(0.95);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
 
-.table-wrapper { overflow-x: auto; max-height: 70vh; overflow-y: auto; }
-table { width: 100%; border-collapse: collapse; min-width: 800px; }
-thead th { 
-    position: sticky; top: 0; 
-    background-color: #2c3e50; color: white; 
-    padding: 12px; text-align: left; 
+/* Toast Container */
+#toast-container {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 100;
+    pointer-events: none;
 }
-td { padding: 10px 12px; border-bottom: 1px solid #eee; font-size: 14px; }
-tr:nth-child(even) { background-color: #f9f9f9; }
-tr:hover { background-color: #eef2f5; }
+.toast {
+    animation: slideIn 0.3s ease-out, fadeOut 0.5s 4.5s forwards;
+    min-width: 250px;
+    max-width: 90vw;
+}
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+/* Table header style for sortable columns */
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+.sortable:hover {
+    background-color: #4338CA; /* darker indigo on hover */
+}
+/* Style for text truncation in mobile cards */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+/* Fix for scrollbar in small screens due to FABs */
+@media (max-width: 600px) {
+    body {
+        padding-bottom: 6rem; /* space for fixed buttons */
+    }
+}
+
+/* Loading Spinner Animation */
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
