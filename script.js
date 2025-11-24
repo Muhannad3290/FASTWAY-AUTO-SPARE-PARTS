@@ -1,19 +1,19 @@
-// Configuration Placeholders - REPLACE THESE!
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+// Configuration Placeholders - KEEP THESE for the Gemini API call
 const API_MODEL = 'gemini-2.5-flash';
 const API_KEY = ""; // <-- REPLACE with your actual Gemini API Key
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${API_KEY}`;
 
 
-let db, auth;
-let userId = null;
-let isAuthReady = false;
+// --- Removed Firebase Variables and Imports ---
+// const appId = 'default-app-id'; // Removed
+// const firebaseConfig = null; // Removed
+// let db, auth; // Removed
+let userId = 'local-user'; // Mock user ID for local structure simulation
+let isAuthReady = true; // Always ready in local mode
 
-window.allPartsData = [];
+window.allPartsData = JSON.parse(localStorage.getItem('localPartsData') || '[]'); // Use local storage for mock data
 window.filteredPartsData = [];
-window.PARTS_KEYS = ['zoren_no', 'oem_no', 'car_maker', 'applications']; 
+window.PARTS_KEYS = ['zoren_no', 'oem_no', 'car_maker', 'applications'];
 window.currentPartToEdit = null;
 
 // Load persistent settings
@@ -56,91 +56,38 @@ const fileToBase64 = (file) => {
     });
 };
 
-// --- FIREBASE INITIALIZATION AND AUTH ---
+// --- FIRESTORE/FIREBASE REPLACEMENTS ---
 
-const initFirebase = async () => {
-    // Requires initializeApp, getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged, getFirestore
+// Simplified Data Handling (No Firebase required)
+const updateLocalData = () => {
+    // 1. Calculate stats
+    const carMakers = new Set(window.allPartsData.map(p => p.car_maker).filter(m => m && m.trim()).map(m => m.trim().toLowerCase()));
     
-    if (!firebaseConfig) {
-        console.error("Firebase configuration is missing.");
-        document.getElementById('status-message').innerText = "ERROR: Firebase config missing. Cannot persist data.";
-        window.showToast("Firebase config missing. Data cannot be saved.", 'error');
-        return;
-    }
+    // 2. Update UI stats
+    document.getElementById('total-parts-count').textContent = window.allPartsData.length;
+    document.getElementById('unique-makers-count').textContent = carMakers.size;
 
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-
-    try {
-        if (initialAuthToken) {
-            await signInWithCustomToken(auth, initialAuthToken);
-        } else {
-            await signInAnonymously(auth);
-        }
-    } catch (e) {
-        console.error("Authentication failed:", e);
-        await signInAnonymously(auth); 
-    }
-
-    onAuthStateChanged(auth, (user) => {
-        isAuthReady = true;
-        if (user) {
-            userId = user.uid;
-            document.getElementById('status-message').innerText = `Authenticated`;
-            document.getElementById('user-id-display').textContent = userId;
-            
-            const savedSearchTerm = localStorage.getItem('searchTerm') || '';
-            document.getElementById('search-input').value = savedSearchTerm;
-            
-            listenForPartsData();
-        } else {
-            document.getElementById('status-message').innerText = "Not Authenticated";
-            document.getElementById('user-id-display').textContent = 'N/A';
-            window.showToast("Authentication failed. Using anonymous mode.", 'warning');
-        }
-    });
+    // 3. Save to local storage (Simple persistence)
+    localStorage.setItem('localPartsData', JSON.stringify(window.allPartsData));
+    
+    // 4. Re-render the view
+    searchAndRender();
 };
 
-window.onload = initFirebase;
-
-// --- FIRESTORE DATA OPERATIONS ---
-
-const getCollectionRef = () => {
-    if (!userId) {
-        throw new Error("User ID not available for database operation."); 
-    }
-    // Path: /artifacts/{appId}/users/{userId}/spare_parts
-    return collection(db, 'artifacts', appId, 'users', userId, 'spare_parts');
+const initLocalApp = () => {
+    document.getElementById('status-message').innerText = `Local Mode`;
+    document.getElementById('user-id-display').textContent = userId;
+    
+    const savedSearchTerm = localStorage.getItem('searchTerm') || '';
+    document.getElementById('search-input').value = savedSearchTerm;
+    
+    // Initial data load and render
+    updateLocalData(); 
 };
 
-const listenForPartsData = () => {
-    if (!isAuthReady || !userId) return;
+window.onload = initLocalApp;
 
-    const partsCollection = getCollectionRef();
-    onSnapshot(partsCollection, (snapshot) => {
-        const parts = [];
-        const carMakers = new Set();
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            parts.push({ id: doc.id, ...data });
-            if (data.car_maker && data.car_maker.trim()) {
-                carMakers.add(data.car_maker.trim().toLowerCase());
-            }
-        });
-        window.allPartsData = parts;
-        
-        document.getElementById('total-parts-count').textContent = parts.length;
-        document.getElementById('unique-makers-count').textContent = carMakers.size;
-
-        searchAndRender();
-    }, (error) => {
-        console.error("Error listening to Firestore:", error);
-        window.showToast("Error loading data: " + error.message, 'error');
-    });
-};
-
-// --- LLM API CALLER SCHEMAS ---
+// --- LLM API CALLER SCHEMAS (UNCHANGED) ---
 
 const JSON_SCHEMA = {
     type: "ARRAY",
@@ -209,7 +156,7 @@ window.handleImageConversion = async () => {
         statusBox.className = 'text-sm font-medium mt-1 text-green-600 min-h-4';
         imageInput.value = ''; 
 
-        window.showToast("AI image conversion complete. Starting database import...", 'info');
+        window.showToast("AI image conversion complete. Starting local data import...", 'info');
         await window.savePastedData();
 
     } catch (error) {
@@ -259,7 +206,6 @@ const fetchAiStructuredData = async (payload) => {
 
 // Function to clean and save pasted JSON data
 window.savePastedData = async () => {
-    // Requires writeBatch, doc, setDoc, getCollectionRef
     
     const jsonTextarea = document.getElementById('json-input');
     const statusBox = document.getElementById('json-import-status');
@@ -270,7 +216,7 @@ window.savePastedData = async () => {
     statusBox.className = 'text-sm font-medium mt-1 text-blue-600 min-h-4';
 
     if (!isAuthReady || !userId) {
-        statusBox.textContent = 'Error: Authentication not ready. Please wait a moment.';
+        statusBox.textContent = 'Error: App not ready.';
         statusBox.className = 'text-sm font-medium mt-1 text-red-500 min-h-4';
         pasteButton.disabled = false;
         return;
@@ -316,6 +262,8 @@ window.savePastedData = async () => {
                 if (existingZorenNos.has(cleanPart.zoren_no)) {
                     duplicatesFound++;
                 } else {
+                    // Create a mock ID for a new part
+                    cleanPart.id = 'local-' + Math.random().toString(36).substring(2, 9);
                     cleanedData.push(cleanPart);
                     existingZorenNos.add(cleanPart.zoren_no);
                 }
@@ -332,27 +280,16 @@ window.savePastedData = async () => {
             return;
         }
 
-        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. Saving to database...`;
+        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. Saving to local storage...`;
 
-        // Batch Write to Firestore
-        const partsCollection = getCollectionRef();
-        let batch = writeBatch(db);
-        const batchLimit = 499;
-        let addedCount = 0;
+        // --- Firebase Batch Write Logic REPLACED with local array update ---
+        window.allPartsData.push(...cleanedData);
+        updateLocalData();
+        let addedCount = cleanedData.length;
+        // -------------------------------------------------------------------
 
-        for (let i = 0; i < cleanedData.length; i++) {
-            const part = cleanedData[i];
-            const newDocRef = doc(partsCollection); 
-            batch.set(newDocRef, part);
-            addedCount++;
 
-            if ((i + 1) % batchLimit === 0 || i === cleanedData.length - 1) {
-                await batch.commit();
-                if (i < cleanedData.length - 1) batch = writeBatch(db);
-            }
-        }
-
-        const finalMessage = `Successfully imported ${addedCount} new parts!`;
+        const finalMessage = `Successfully imported ${addedCount} new parts to local catalog!`;
         statusBox.textContent = finalMessage;
         statusBox.className = 'text-sm font-medium mt-1 text-green-600 min-h-4';
         window.showToast(finalMessage, 'success');
@@ -447,12 +384,21 @@ window.savePart = async () => {
             applications: applications
         };
 
-        const partsCollection = getCollectionRef();
-        let docRef = isNew ? doc(partsCollection) : doc(partsCollection, partId);
+        if (isNew) {
+            // Add new part to local data
+            updatedPart.id = 'local-' + Math.random().toString(36).substring(2, 9);
+            window.allPartsData.push(updatedPart);
+        } else {
+            // Update existing part in local data
+            const index = window.allPartsData.findIndex(p => p.id === partId);
+            if (index !== -1) {
+                window.allPartsData[index] = { id: partId, ...updatedPart };
+            }
+        }
+        
+        updateLocalData(); // Save to local storage and re-render
 
-        await setDoc(docRef, updatedPart);
-
-        const successMsg = `Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'}!`;
+        const successMsg = `Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'} in local catalog!`;
         statusBox.textContent = successMsg;
         statusBox.classList.add('text-green-600');
         window.showToast(successMsg, 'success');
@@ -487,9 +433,18 @@ window.deletePart = async () => {
     if (!partId || !isAuthReady || !userId) return;
 
     try {
-        const partDocRef = doc(db, getCollectionRef().path, partId);
-        await deleteDoc(partDocRef);
-        window.showToast(`Part ${zorenNo} deleted successfully.`, 'success');
+        // --- Firebase Delete Logic REPLACED with local array filter ---
+        const initialLength = window.allPartsData.length;
+        window.allPartsData = window.allPartsData.filter(p => p.id !== partId);
+        
+        if (window.allPartsData.length < initialLength) {
+             updateLocalData(); // Save to local storage and re-render
+             window.showToast(`Part ${zorenNo} deleted successfully from local catalog.`, 'success');
+        } else {
+             throw new Error("Part not found in local data.");
+        }
+        // -------------------------------------------------------------
+        
     } catch (error) {
         console.error("Delete Error:", error);
         window.showToast(`Deletion of ${zorenNo} failed: ${error.message}`, 'error');
@@ -497,15 +452,15 @@ window.deletePart = async () => {
 };
 
 
-// --- UI & RENDERING LOGIC ---
+// --- UI & RENDERING LOGIC (UNCHANGED) ---
 
 window.toggleImportPanel = (show) => {
     const modal = document.getElementById('import-modal-backdrop');
     if (show) {
         modal.classList.add('active');
     } else {
-        modal.classList.remove('active');
         // Clear all states
+        modal.classList.remove('active');
         document.getElementById('json-import-status').textContent = '';
         document.getElementById('json-prettify-status').textContent = '';
         document.getElementById('conversion-status-image').textContent = '';
@@ -697,9 +652,11 @@ window.prettifyJson = () => {
         const parsed = JSON.parse(jsonTextarea.value);
         jsonTextarea.value = JSON.stringify(parsed, null, 2);
         statusBox.textContent = 'JSON formatted neatly.';
+        statusBox.classList.remove('text-red-500');
         statusBox.classList.add('text-green-500');
     } catch (e) {
         statusBox.textContent = 'Invalid JSON: Cannot format.';
+        statusBox.classList.remove('text-green-500');
         statusBox.classList.add('text-red-500');
     }
 };
