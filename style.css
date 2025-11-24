@@ -1,5 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
-body { font-family: 'Inter', sans-serif; }
+body { 
+    font-family: 'Inter', sans-serif; 
+}
 
 /* Floating action button (FAB) */
 #import-toggle-btn, #add-part-btn {
@@ -7,11 +9,17 @@ body { font-family: 'Inter', sans-serif; }
     bottom: 2rem;
     z-index: 50;
 }
-#import-toggle-btn { right: 2rem; }
+#import-toggle-btn { 
+    right: 2rem; 
+}
 /* Adjusted for smaller screen visibility */
-#add-part-btn { right: 8rem; } 
+#add-part-btn { 
+    right: 10rem; 
+} 
 @media (min-width: 768px) { 
-    #add-part-btn { right: 15rem; } 
+    #add-part-btn { 
+        right: 15rem; 
+    } 
 }
 
 /* Custom modal backdrop */
@@ -26,23 +34,9 @@ body { font-family: 'Inter', sans-serif; }
     display: none;
     justify-content: center;
     align-items: center;
-    /* Simple fade-in transition */
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
 }
 .modal-backdrop.active {
     display: flex;
-    opacity: 1;
-}
-/* Modal content slide-in effect */
-.modal-backdrop.active > div {
-    transform: scale(1);
-    opacity: 1;
-}
-.modal-backdrop > div {
-    transform: scale(0.95);
-    opacity: 0;
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 /* Toast Container */
@@ -55,8 +49,7 @@ body { font-family: 'Inter', sans-serif; }
 }
 .toast {
     animation: slideIn 0.3s ease-out, fadeOut 0.5s 4.5s forwards;
-    min-width: 250px;
-    max-width: 90vw;
+    min-width: 300px;
 }
 @keyframes slideIn {
     from { transform: translateX(100%); opacity: 0; }
@@ -70,10 +63,10 @@ body { font-family: 'Inter', sans-serif; }
 .sortable {
     cursor: pointer;
     user-select: none;
-    transition: background-color 0.2s;
+    transition: color 0.2s;
 }
 .sortable:hover {
-    background-color: #4338CA; /* darker indigo on hover */
+    color: #E0E7FF; /* lighter indigo on hover */
 }
 /* Style for text truncation in mobile cards */
 .line-clamp-2 {
@@ -81,10 +74,4 @@ body { font-family: 'Inter', sans-serif; }
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-}
-/* Fix for scrollbar in small screens due to FABs */
-@media (max-width: 600px) {
-    body {
-        padding-bottom: 6rem; /* space for fixed buttons */
-    }
 }
