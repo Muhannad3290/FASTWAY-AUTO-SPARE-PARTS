@@ -6,23 +6,15 @@ import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-
 // --- GLOBAL SETUP ---
 // NOTE: These variables (__app_id, __firebase_config, __initial_auth_token) are placeholders 
 // that must be defined/injected by the environment hosting this app.
-const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-const firebaseConfig = typeof _firebase_config !== 'undefined' ? JSON.parse(_firebase_config) : null;
-const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-let db, auth;
-let userId = null;
-let isAuthReady = false;
-
-window.allPartsData = [];
-window.filteredPartsData = [];
-window.PARTS_KEYS = ['zoren_no', 'oem_no', 'car_maker', 'applications']; 
-window.currentPartToEdit = null;
-
-// Load persistent settings
-window.sortColumn = localStorage.getItem('sortColumn') || 'zoren_no';
-window.sortDirection = localStorage.getItem('sortDirection') || 'asc';
-
+const userFirebaseConfig = {
+    apiKey: "AIzaSyCxY-CUX3lqlxATdvEi0PMEaoip25VHxm0",
+    authDomain: "fastway-spare.firebaseapp.com",
+    projectId: "fastway-spare",
+    storageBucket: "fastway-spare.firebasestorage.app",
+    messagingSenderId: "777904219002",
+    appId: "1:777904219002:web:2c52606630c7aa16e66cc3",
+    measurementId: "G-XDFP2M8DFL"
+};
 // --- UTILITY FUNCTIONS (TOAST) ---
 
 /** Shows a custom toast notification. */
@@ -634,3 +626,4 @@ window.prettifyJson = () => {
         statusBox.classList.add('text-red-500');
     }
 };
+
