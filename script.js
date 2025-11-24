@@ -20,14 +20,29 @@ import {
 
 
 // 🔑 --- FIREBASE CONFIGURATION (YOUR PROVIDED DETAILS) ---
-const firebaseConfig = {
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  // TODO: Add SDKs for Firebase products that you want to use
+  // https://firebase.google.com/docs/web/setup#available-libraries
+
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  const firebaseConfig = {
     apiKey: "AIzaSyD6BOz0T5xUlprWpI4AH2Y_5W3HnlRq0xI",
     authDomain: "fastway-autospare-parts-2836c.firebaseapp.com",
     projectId: "fastway-autospare-parts-2836c",
     storageBucket: "fastway-autospare-parts-2836c.firebasestorage.app",
     messagingSenderId: "721022068044",
-    appId: "1:721022068044:web:83af2578b52b8b11ea5be9",
-    measurementId: "G-0VEV7J2FTN"
+    appId: "1:721022068044:web:b64c8f3a07543305ea5be9",
+    measurementId: "G-0T3P2Z0513"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+</script>
 };
 
 // --- GEMINI API SETUP ---
@@ -799,3 +814,4 @@ window.prettifyJson = () => {
         statusBox.classList.add('text-red-500');
     }
 };
+
