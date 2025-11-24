@@ -20,29 +20,14 @@ import {
 
 
 // 🔑 --- FIREBASE CONFIGURATION (YOUR PROVIDED DETAILS) ---
-<script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-  const firebaseConfig = {
+const firebaseConfig = {
     apiKey: "AIzaSyD6BOz0T5xUlprWpI4AH2Y_5W3HnlRq0xI",
     authDomain: "fastway-autospare-parts-2836c.firebaseapp.com",
     projectId: "fastway-autospare-parts-2836c",
     storageBucket: "fastway-autospare-parts-2836c.firebasestorage.app",
     messagingSenderId: "721022068044",
-    appId: "1:721022068044:web:b64c8f3a07543305ea5be9",
-    measurementId: "G-0T3P2Z0513"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-</script>
+    appId: "1:721022068044:web:83af2578b52b8b11ea5be9",
+    measurementId: "G-0VEV7J2FTN"
 };
 
 // --- GEMINI API SETUP ---
@@ -73,7 +58,7 @@ window.sortDirection = localStorage.getItem('sortDirection') || 'asc';
 
 // --- INITIAL DOM SETUP ---
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Firebase Initialization is now called here
+    // 1. Firebase Initialization
     initFirebase();
 
     // 2. AI Button Setup
@@ -130,9 +115,6 @@ const fileToBase64 = (file) => {
 
 const initFirebase = async () => {
     
-    // NOTE: Removed the 'if (!firebaseConfig)' check as it was causing issues or masking a timing problem.
-    // The configuration is clearly defined above and should be available now.
-
     try {
         const app = initializeApp(firebaseConfig);
         getAnalytics(app); // Initialize analytics
@@ -494,13 +476,21 @@ window.closeEditModal = () => {
 };
 
 window.savePart = async () => {
-    if (!isAuthReady || !userId || !db) {
-           window.showToast("Cannot save: Authentication not ready.", 'error');
-           return;
-    }
-
+    
     const statusBox = document.getElementById('edit-status');
     const saveButton = document.getElementById('save-edit-btn');
+    
+    // 🎯 FIX for "Authentication not ready" error: Check status before saving
+    if (!isAuthReady) {
+        window.showToast("Initializing user session, please wait a moment...", 'warning');
+        return; 
+    }
+    if (!userId || !db) {
+        window.showToast("Cannot save: User session not active. Please refresh or check connection.", 'error');
+        return;
+    }
+    // End of Fix
+    
     statusBox.textContent = 'Processing...';
     saveButton.disabled = true;
 
@@ -579,7 +569,7 @@ window.deletePart = async () => {
     window.closeDeleteModal(); 
 
     if (!partId || !isAuthReady || !userId || !db) {
-           window.showToast("Cannot delete: Authentication not ready.", 'error');
+           window.showToast("Cannot delete: Authentication not ready or missing data.", 'error');
            return;
     }
 
@@ -606,7 +596,6 @@ window.toggleImportPanel = (show) => {
         document.getElementById('json-import-status').textContent = '';
         document.getElementById('json-prettify-status').textContent = '';
         
-        const convertButton = document.getElementById('convert-image-btn');
         const statusElement = document.getElementById('conversion-status-image');
         if (API_KEY === "") {
              statusElement.textContent = '⚠️ Please enter your Gemini API Key to enable AI conversion.';
@@ -814,4 +803,3 @@ window.prettifyJson = () => {
         statusBox.classList.add('text-red-500');
     }
 };
-
