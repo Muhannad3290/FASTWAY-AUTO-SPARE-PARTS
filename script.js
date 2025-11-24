@@ -1,15 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, doc, writeBatch, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- GLOBAL SETUP ---
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, onSnapshot, doc, writeBatch, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-// --- GLOBAL SETUP ---
-
-// Replace the placeholder config with your actual Firebase config object
+// NOTE: These variables are typically injected by a hosting environment. 
+// They are kept for function compatibility.
 const firebaseConfig = {
   apiKey: "AIzaSyCxY-CUX3lqlxATdvEi0PMEaoip25VHxm0",
   authDomain: "fastway-spare.firebaseapp.com",
@@ -20,25 +16,16 @@ const firebaseConfig = {
   measurementId: "G-XDFP2M8DFL"
 };
 
-const appId = firebaseConfig.appId; // Use the appId from your config
-const initialAuthToken = null; // No custom token needed for basic setup
-
-
-let db, auth;
-// ... rest of your code
-
-
 let db, auth;
 let userId = null;
 let isAuthReady = false;
 
 window.allPartsData = [];
 window.filteredPartsData = [];
-// Define the standard keys for parts
 window.PARTS_KEYS = ['zoren_no', 'oem_no', 'car_maker', 'applications']; 
 window.currentPartToEdit = null;
 
-// Load persistent settings (important for user experience)
+// Load persistent settings
 window.sortColumn = localStorage.getItem('sortColumn') || 'zoren_no';
 window.sortDirection = localStorage.getItem('sortDirection') || 'asc';
 
@@ -54,8 +41,8 @@ window.showToast = (message, type = 'info') => {
     if (type === 'error') bgColor = 'bg-red-600';
     if (type === 'warning') bgColor = 'bg-yellow-600';
 
-    toast.className = toast toast p-4 mb-3 text-white rounded-lg shadow-xl ${bgColor};
-    toast.innerHTML = <div class="font-semibold">${type.toUpperCase()}</div><p class="text-sm">${message}</p>;
+    toast.className = `toast p-4 mb-3 text-white rounded-lg shadow-xl ${bgColor}`;
+    toast.innerHTML = `<div class="font-semibold">${type.toUpperCase()}</div><p class="text-sm">${message}</p>`;
 
     container.appendChild(toast);
     
@@ -78,18 +65,16 @@ const initFirebase = async () => {
     const app = initializeApp(firebaseConfig);
     db = getFirestore(app);
     auth = getAuth(app);
+    // setLogLevel('Debug'); // Enable for detailed debugging
 
     // Authentication logic
-    try {
-        if (initialAuthToken) {
-            await signInWithCustomToken(auth, initialAuthToken);
-        } else {
-            await signInAnonymously(auth);
-        }
-    } catch (e) {
-        console.error("Authentication failed:", e);
-        // Fallback attempt
-        await signInAnonymously(auth); 
+    if (initialAuthToken) {
+        await signInWithCustomToken(auth, initialAuthToken).catch(e => {
+            console.error("Custom token sign-in failed, falling back to anonymous:", e);
+            return signInAnonymously(auth);
+        });
+    } else {
+        await signInAnonymously(auth);
     }
 
     onAuthStateChanged(auth, (user) => {
@@ -97,10 +82,10 @@ const initFirebase = async () => {
         if (user) {
             userId = user.uid;
             console.log("Firebase Auth Ready. User ID:", userId);
-            document.getElementById('status-message').innerText = Authenticated;
+            document.getElementById('status-message').innerText = `Authenticated`;
             document.getElementById('user-id-display').textContent = userId;
             
-            // Load saved search term and render initial view
+            // Load saved search term
             const savedSearchTerm = localStorage.getItem('searchTerm') || '';
             document.getElementById('search-input').value = savedSearchTerm;
             
@@ -109,7 +94,6 @@ const initFirebase = async () => {
             console.log("No user signed in.");
             document.getElementById('status-message').innerText = "Not Authenticated";
             document.getElementById('user-id-display').textContent = 'N/A';
-            window.showToast("Authentication failed. Using anonymous mode.", 'warning');
         }
     });
 };
@@ -131,7 +115,6 @@ const listenForPartsData = () => {
     if (!isAuthReady || !userId) return;
 
     const partsCollection = getCollectionRef();
-    // Attach real-time listener
     onSnapshot(partsCollection, (snapshot) => {
         const parts = [];
         const carMakers = new Set();
@@ -149,48 +132,37 @@ const listenForPartsData = () => {
         document.getElementById('total-parts-count').textContent = parts.length;
         document.getElementById('unique-makers-count').textContent = carMakers.size;
 
-        searchAndRender(); // Re-render the UI with new data
+        searchAndRender();
     }, (error) => {
         console.error("Error listening to Firestore:", error);
         window.showToast("Error loading data: " + error.message, 'error');
     });
 };
 
-// Function to clean and save pasted JSON data
+// Function to clean and save pasted JSON data with DUPLICATE CHECK
 window.savePastedData = async () => {
     const jsonTextarea = document.getElementById('json-input');
     const statusBox = document.getElementById('json-import-status');
     const pasteButton = document.getElementById('import-btn');
 
-    statusBox.textContent = 'Processing...';
+    statusBox.textContent = 'Parsing and cleaning data...';
     pasteButton.disabled = true;
     statusBox.classList.remove('text-red-500', 'text-green-600');
     statusBox.classList.add('text-blue-600');
-    statusBox.className = 'text-sm font-medium mt-1 text-blue-600 min-h-4';
 
     if (!isAuthReady || !userId) {
         statusBox.textContent = 'Error: Authentication not ready. Please wait a moment.';
-        statusBox.className = 'text-sm font-medium mt-1 text-red-500 min-h-4';
         pasteButton.disabled = false;
         return;
     }
 
-    let rawDataString = jsonTextarea.value.trim();
-
     try {
-        if (!rawDataString) {
-            throw new Error("No data found in JSON text area to import.");
-        }
-
-        // --- CORE PARSING AND CLEANING ---
-        statusBox.textContent = 'Parsing and cleaning data...';
-
-        let pastedData = JSON.parse(rawDataString);
+        let pastedData = JSON.parse(jsonTextarea.value);
         if (!Array.isArray(pastedData)) {
             if (typeof pastedData === 'object' && pastedData !== null) {
                 pastedData = [pastedData];
             } else {
-                throw new Error("Content must be a valid JSON array or object.");
+                throw new Error("Pasted content must be a valid JSON array or object.");
             }
         }
         
@@ -207,54 +179,51 @@ window.savePastedData = async () => {
                 const normalizedKey = key.toLowerCase();
                 let value = null;
                 
-                // Find the key regardless of casing
+                // Find value regardless of key case
                 const foundKey = Object.keys(part).find(k => k.toLowerCase() === normalizedKey);
                 if (foundKey) {
                     value = part[foundKey];
                 }
 
                 if (key === 'oem_no') {
-                    // If the input is an array or a string, clean and split it into an array of strings
-                    const oemInput = Array.isArray(value) ? value.join(' ') : String(value || '');
-                    cleanPart[key] = oemInput
+                    cleanPart[key] = (typeof value === 'string' ? value.trim() : String(value || ''))
                         .split(/\s+|,/g) // Split by space or comma
                         .map(oem => oem.trim())
                         .filter(oem => oem.length > 0);
                 } else {
-                    // All other fields are cleaned as strings
                     cleanPart[key] = (typeof value === 'string' ? value.trim() : String(value || '')).trim();
                 }
 
-                // Mark as valid if at least one key has content
-                if (cleanPart[key] && (Array.isArray(cleanPart[key]) ? cleanPart[key].length > 0 : cleanPart[key].length > 0)) {
+                if ((key === 'zoren_no' && cleanPart[key].length > 0) || (key !== 'zoren_no' && cleanPart[key].length > 0) || (key === 'oem_no' && cleanPart[key].length > 0)) {
                     isValid = true;
                 }
             });
 
-            // Ensure Zoren No. is present and valid for insertion, and check for duplicates
-            if (isValid && cleanPart.zoren_no && cleanPart.zoren_no.length > 0) {
+            // Check for duplicates using the Zoren No.
+            if (isValid && cleanPart.zoren_no.length > 0) {
                 if (existingZorenNos.has(cleanPart.zoren_no)) {
                     duplicatesFound++;
                 } else {
                     cleanedData.push(cleanPart);
-                    existingZorenNos.add(cleanPart.zoren_no);
+                    existingZorenNos.add(cleanPart.zoren_no); // Add new Zoren No. to set to prevent duplicates within the same batch
                 }
             }
         }); 
 
         if (cleanedData.length === 0) {
             const msg = duplicatesFound > 0 ? 
-                All ${duplicatesFound} parts were already in the catalog (Duplicate Zoren No. skipped). :
+                `All ${duplicatesFound} parts were already in the catalog (Duplicate Zoren No.).` :
                 'Import failed. No valid spare parts found after cleaning.';
             statusBox.textContent = msg;
-            statusBox.className = 'text-sm font-medium mt-1 text-red-500 min-h-4';
-            if (duplicatesFound === 0) throw new Error("No valid data found.");
+            statusBox.classList.remove('text-blue-600');
+            statusBox.classList.add('text-red-500');
+            if (duplicatesFound === 0) throw new Error("No valid data found in paste.");
             return;
         }
 
-        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. ${duplicatesFound > 0 ? (${duplicatesFound} duplicates skipped). : ''} Saving to database...`;
+        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. ${duplicatesFound > 0 ? `(${duplicatesFound} duplicates skipped).` : ''} Saving to database...`;
 
-        // Save Data to Firestore (using batched writes)
+        // Save Data to Firestore (using batched writes for efficiency)
         const partsCollection = getCollectionRef();
         let batch = writeBatch(db);
         const batchLimit = 499;
@@ -274,19 +243,19 @@ window.savePastedData = async () => {
             }
         }
 
-        const finalMessage = `Successfully imported ${addedCount} new parts! ${duplicatesFound > 0 ? (${duplicatesFound} duplicates were skipped). : ''}`;
+        const finalMessage = `Successfully imported ${addedCount} new parts! ${duplicatesFound > 0 ? `(${duplicatesFound} duplicates were skipped).` : ''}`;
         statusBox.textContent = finalMessage;
-        statusBox.className = 'text-sm font-medium mt-1 text-green-600 min-h-4';
+        statusBox.classList.remove('text-blue-600');
+        statusBox.classList.add('text-green-600');
         window.showToast(finalMessage, 'success');
         jsonTextarea.value = ''; // Clear input on success
-        document.getElementById('json-prettify-status').textContent = '';
-
 
     } catch (error) {
         console.error("Import Error:", error);
         const msg = 'Import failed: ' + error.message;
         statusBox.textContent = msg;
-        statusBox.className = 'text-sm font-medium mt-1 text-red-500 min-h-4';
+        statusBox.classList.remove('text-blue-600');
+        statusBox.classList.add('text-red-500');
         window.showToast(msg, 'error');
     } finally {
         pasteButton.disabled = false;
@@ -321,7 +290,6 @@ window.openEditModal = (partId) => {
     document.getElementById('edit-modal-title').textContent = 'Edit Spare Part';
     document.getElementById('save-edit-btn').textContent = 'Save Changes';
     document.getElementById('edit-zoren_no').value = part.zoren_no || '';
-    // Display OEM array as a comma-separated string
     document.getElementById('edit-oem_no').value = Array.isArray(part.oem_no) ? part.oem_no.join(', ') : (part.oem_no || '');
     document.getElementById('edit-car_maker').value = part.car_maker || '';
     document.getElementById('edit-applications').value = part.applications || '';
@@ -344,7 +312,6 @@ window.savePart = async () => {
     statusBox.textContent = 'Processing...';
     saveButton.disabled = true;
     statusBox.classList.remove('text-red-500', 'text-green-600');
-    statusBox.classList.add('text-blue-600');
 
     const partId = window.currentPartToEdit ? window.currentPartToEdit.id : null;
     const isNew = !partId;
@@ -364,18 +331,18 @@ window.savePart = async () => {
         const car_maker = document.getElementById('edit-car_maker').value.trim();
         const applications = document.getElementById('edit-applications').value.trim();
         
-        // Duplicate check logic: Check if another part has the same Zoren No.
+        // Duplicate check logic
         const isDuplicate = window.allPartsData.some(p => 
             p.zoren_no === zoren_no && p.id !== partId
         );
         if (isDuplicate) {
-            throw new Error(Zoren No. "${zoren_no}" already exists in the catalog.);
+            throw new Error(`Zoren No. "${zoren_no}" already exists in the catalog.`);
         }
 
-        // Prepare data object, splitting OEM string into an array
+        // Prepare data object
         const updatedPart = {
             zoren_no: zoren_no,
-            oem_no: oem_no_str.split(/\s+|,/g).map(oem => oem.trim()).filter(oem => oem.length > 0), // Convert to array
+            oem_no: oem_no_str.split(/\s+|,/g).map(oem => oem.trim()).filter(oem => oem.length > 0),
             car_maker: car_maker,
             applications: applications
         };
@@ -384,28 +351,23 @@ window.savePart = async () => {
         let docRef;
 
         if (isNew) {
-            // Create a new document reference with an auto-generated ID
             docRef = doc(partsCollection); 
         } else {
-            // Get the reference for the existing document
             docRef = doc(partsCollection, partId);
         }
 
-        // Use setDoc for both creation and update
         await setDoc(docRef, updatedPart);
 
-        const successMsg = Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'}!;
+        const successMsg = `Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'}!`;
         statusBox.textContent = successMsg;
-        statusBox.classList.remove('text-blue-600');
         statusBox.classList.add('text-green-600');
         window.showToast(successMsg, 'success');
-        setTimeout(window.closeEditModal, 1500); // Close modal after delay
+        setTimeout(window.closeEditModal, 1500);
 
     } catch (error) {
-        console.error(${action} Error:, error);
+        console.error(`${action} Error:`, error);
         const msg = `${action} failed: ` + error.message;
         statusBox.textContent = msg;
-        statusBox.classList.remove('text-blue-600');
         statusBox.classList.add('text-red-500');
         window.showToast(msg, 'error');
     } finally {
@@ -431,13 +393,12 @@ window.deletePart = async () => {
     if (!partId || !isAuthReady || !userId) return;
 
     try {
-        // Construct the correct document path using the collection path and partId
         const partDocRef = doc(db, getCollectionRef().path, partId);
         await deleteDoc(partDocRef);
-        window.showToast(Part ${zorenNo} deleted successfully., 'success');
+        window.showToast(`Part ${zorenNo} deleted successfully.`, 'success');
     } catch (error) {
         console.error("Delete Error:", error);
-        window.showToast(Deletion of ${zorenNo} failed: ${error.message}, 'error');
+        window.showToast(`Deletion of ${zorenNo} failed: ${error.message}`, 'error');
     }
 };
 
@@ -450,7 +411,6 @@ window.toggleImportPanel = (show) => {
         modal.classList.add('active');
     } else {
         modal.classList.remove('active');
-        // Clear all statuses and inputs on close
         document.getElementById('json-import-status').textContent = '';
         document.getElementById('json-prettify-status').textContent = '';
     }
@@ -484,11 +444,9 @@ window.searchAndRender = () => {
         currentData = window.allPartsData.filter(part => 
             window.PARTS_KEYS.some(key => {
                 const value = part[key];
-                // Check if value is an array (like oem_no)
                 if (Array.isArray(value)) {
                     return value.some(item => String(item).toLowerCase().includes(searchTerm));
                 }
-                // Check other string values
                 return value && String(value).toLowerCase().includes(searchTerm);
             })
         );
@@ -523,7 +481,7 @@ window.searchAndRender = () => {
     });
     
     if (window.filteredPartsData.length === 0) {
-        const emptyMessage = searchTerm ? No results found for "${searchTerm}". : "The catalog is empty. Start by adding a part manually or importing JSON data.";
+        const emptyMessage = searchTerm ? `No results found for "${searchTerm}".` : "The catalog is empty. Start by adding a part manually or importing JSON data.";
         
         // For Desktop Table
         const row = tableBody.insertRow();
@@ -533,22 +491,18 @@ window.searchAndRender = () => {
         cell.textContent = emptyMessage;
         
         // For Mobile Cards
-        mobileContainer.innerHTML = <div class="p-8 text-center text-gray-400 italic bg-white rounded-xl shadow-md">${emptyMessage}</div>;
+        mobileContainer.innerHTML = `<div class="p-8 text-center text-gray-400 italic bg-white rounded-xl">${emptyMessage}</div>`;
 
-        document.getElementById('result-count').textContent = Showing 0 / ${window.allPartsData.length} parts;
+        document.getElementById('result-count').textContent = `Showing 0 / ${window.allPartsData.length} parts`;
         return;
     }
 
     window.filteredPartsData.forEach(part => {
-        // Function to generate the OEM chips HTML
         const oemChipsHtml = (Array.isArray(part.oem_no) && part.oem_no.length > 0) ? part.oem_no.map(oem => 
             `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-1.5 mb-1.5 shadow-sm">
                 ${oem}
             </span>`
         ).join('') : '<span class="text-gray-400 italic">None</span>';
-        
-        // Safely escape Zoren No. for use in the onclick string
-        const safeZorenNo = part.zoren_no ? part.zoren_no.replace(/'/g, "\\'") : 'N/A';
 
 
         // --- DESKTOP TABLE ROW ---
@@ -562,7 +516,7 @@ window.searchAndRender = () => {
 
         // OEM NO. (Rendered as chips)
         cell = row.insertCell();
-        cell.className = 'px-4 py-3 text-sm text-gray-700 min-w-[150px] max-w-sm';
+        cell.className = 'px-4 py-3 text-sm text-gray-700 min-w-[150px]';
         cell.innerHTML = oemChipsHtml;
 
         // CAR MAKER
@@ -580,26 +534,26 @@ window.searchAndRender = () => {
         cell.className = 'px-4 py-3 text-sm font-medium text-right whitespace-nowrap min-w-[80px]';
         cell.innerHTML = `
             <button onclick="openEditModal('${part.id}')" title="Edit Part"
-                class="text-indigo-600 hover:text-indigo-800 transition mr-3 transform hover:scale-110 focus:outline-none">
+                class="text-indigo-600 hover:text-indigo-900 transition mr-3 transform hover:scale-110 focus:outline-none">
                 <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-7-7l4 4m-4-4l-9 9m9-9l9 9"></path></svg>
             </button>
-            <button onclick="showConfirmDelete('${part.id}', '${safeZorenNo}')" title="Delete Part"
-                class="text-red-600 hover:text-red-800 transition transform hover:scale-110 focus:outline-none">
+            <button onclick="showConfirmDelete('${part.id}', '${part.zoren_no}')" title="Delete Part"
+                class="text-red-600 hover:text-red-900 transition transform hover:scale-110 focus:outline-none">
                 <svg class="w-5 h-5 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
             </button>
         `;
         
         // --- MOBILE CARD ---
         const card = document.createElement('div');
-        card.className = 'bg-white p-4 rounded-xl shadow-md border border-gray-200 space-y-2';
+        card.className = 'bg-white p-4 rounded-xl shadow-md border border-gray-100 space-y-2';
         card.innerHTML = `
-            <div class="flex justify-between items-start border-b pb-2">
-                <span class="text-xl font-bold text-indigo-700 break-words">${part.zoren_no || 'N/A'}</span>
-                <div class="flex space-x-2 flex-shrink-0 mt-0.5">
-                    <button onclick="openEditModal('${part.id}')" title="Edit Part" class="text-indigo-600 hover:text-indigo-800 transition transform hover:scale-110 focus:outline-none">
+            <div class="flex justify-between items-center border-b pb-2">
+                <span class="text-lg font-bold text-indigo-700">${part.zoren_no || 'N/A'}</span>
+                <div class="flex space-x-2">
+                    <button onclick="openEditModal('${part.id}')" title="Edit Part" class="text-indigo-600 hover:text-indigo-900 transition transform hover:scale-110 focus:outline-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-7-7l4 4m-4-4l-9 9m9-9l9 9"></path></svg>
                     </button>
-                    <button onclick="showConfirmDelete('${part.id}', '${safeZorenNo}')" title="Delete Part" class="text-red-600 hover:text-red-800 transition transform hover:scale-110 focus:outline-none">
+                    <button onclick="showConfirmDelete('${part.id}', '${part.zoren_no}')" title="Delete Part" class="text-red-600 hover:text-red-900 transition transform hover:scale-110 focus:outline-none">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </div>
@@ -610,7 +564,7 @@ window.searchAndRender = () => {
             </div>
             <div class="text-sm">
                 <p class="text-gray-500 font-medium">OEM No.:</p>
-                <div class="mt-1 flex flex-wrap">${oemChipsHtml}</div>
+                <div class="mt-1">${oemChipsHtml}</div>
             </div>
             <div class="text-sm">
                 <p class="text-gray-500 font-medium">Applications:</p>
@@ -621,7 +575,7 @@ window.searchAndRender = () => {
     });
 
     document.getElementById('result-count').textContent = 
-        Showing ${window.filteredPartsData.length} / ${window.allPartsData.length} parts;
+        `Showing ${window.filteredPartsData.length} / ${window.allPartsData.length} parts`;
 };
 
 // --- EXPORT & PRETTIFY ---
@@ -636,7 +590,6 @@ window.exportJson = () => {
         const { id, ...rest } = part;
         return {
             ...rest,
-            // Join OEM array back into a space-separated string for export
             oem_no: Array.isArray(rest.oem_no) ? rest.oem_no.join(' ') : rest.oem_no 
         };
     });
