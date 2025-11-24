@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enterprise Spare Parts Catalog</title>
+    <title>Spare Parts Catalog Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
-    <script type="module" src="script.js"></script>
 </head>
 <body class="bg-gray-50 min-h-screen p-4 md:p-8">
 
@@ -14,18 +13,17 @@
         
         <header class="mb-8 p-6 bg-white rounded-xl shadow-lg border-b-4 border-indigo-600">
             <h1 class="text-4xl font-extrabold text-gray-900 mb-2">Enterprise Parts Catalog</h1>
-            <p class="text-gray-600">Client-side system using Local Storage for data management.</p>
+            <p class="text-gray-600">Client-side manager using local storage for persistence. Firebase is currently disabled.</p>
             <div class="mt-3 text-xs text-gray-500 flex flex-wrap gap-x-4">
-                <span id="status-message" class="font-medium text-green-600">Local Data Storage Active</span>
-                <span class="font-mono text-xs">Data Source: <span id="user-id-display" class="font-semibold text-indigo-700">Local Browser Storage</span></span>
-            </div>
+                <span id="status-message" class="font-medium text-indigo-700">Initializing Local Storage...</span>
+                </div>
             
-            <div class="mt-4 grid grid-cols-2 gap-4">
-                <div class="p-3 bg-indigo-50 rounded-lg shadow-sm border border-indigo-200">
+            <div class="mt-4 flex flex-wrap gap-4">
+                <div class="p-3 bg-indigo-50 rounded-lg shadow-sm border border-indigo-200 flex-1 min-w-[150px]">
                     <p class="text-xs font-medium text-indigo-700 uppercase">Total Parts</p>
                     <p id="total-parts-count" class="text-2xl font-bold text-indigo-900">0</p>
                 </div>
-                <div class="p-3 bg-indigo-50 rounded-lg shadow-sm border border-indigo-200">
+                <div class="p-3 bg-indigo-50 rounded-lg shadow-sm border border-indigo-200 flex-1 min-w-[150px]">
                     <p class="text-xs font-medium text-indigo-700 uppercase">Unique Car Makers</p>
                     <p id="unique-makers-count" class="text-2xl font-bold text-indigo-900">0</p>
                 </div>
@@ -38,7 +36,7 @@
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 border-b pb-4">
                 <div class="w-full md:w-3/5">
                     <input type="text" id="search-input" oninput="searchAndRender()" placeholder="Quick Search (e.g., ZRM1153015, Nissan, 17040-3SG0C...)" 
-                        class="w-full p-3 border-2 border-indigo-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-inner">
+                            class="w-full p-3 border-2 border-indigo-300 rounded-xl focus:ring-indigo-500 focus:border-indigo-500 transition shadow-inner">
                 </div>
                 <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-center">
                     <span id="result-count" class="text-sm text-gray-600 font-medium flex items-center justify-center min-w-[150px]">
@@ -71,7 +69,7 @@
                     </thead>
                     <tbody id="parts-table-body" class="bg-white divide-y divide-gray-100">
                         <tr>
-                            <td colspan="5" class="py-8 text-center text-gray-500 italic">Loading local data...</td>
+                            <td colspan="5" class="py-8 text-center text-gray-500 italic">Initializing data listener...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -84,33 +82,28 @@
     </div>
     
     <button id="add-part-btn" onclick="openAddModal()"
-        class="px-5 py-3 bg-green-600 text-white font-bold rounded-full shadow-2xl hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center">
-        <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        Add
+        class="px-6 py-3 bg-green-600 text-white font-bold rounded-full shadow-2xl hover:bg-green-700 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        Add Part
     </button>
     <button id="import-toggle-btn" onclick="toggleImportPanel(true)"
-        class="px-5 py-3 bg-red-600 text-white font-bold rounded-full shadow-2xl hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center">
-        <svg class="w-6 h-6 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-        Import
+        class="px-6 py-3 bg-red-600 text-white font-bold rounded-full shadow-2xl hover:bg-red-700 transition duration-300 ease-in-out transform hover:scale-105 active:scale-95 flex items-center">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+        Import JSON
     </button>
 
 
     <div id="import-modal-backdrop" class="modal-backdrop">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 transform transition-all">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 transform transition-all scale-100 duration-300">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-2xl font-semibold text-gray-800">Import Catalog Data (JSON Only)</h3>
+                <h3 class="text-2xl font-semibold text-gray-800">Load New Catalog Data</h3>
                 <button onclick="toggleImportPanel(false)" class="text-gray-400 hover:text-gray-600">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
             
-            <p class="text-sm text-gray-700 mb-4 p-4 bg-indigo-50 rounded-lg border border-indigo-200">
-                Paste your structured JSON array below. The system requires a list of objects, each containing at least 
-                <span class="font-semibold">zoren_no</span>, <span class="font-semibold">oem_no</span>, <span class="font-semibold">car_maker</span>, and <span class="font-semibold">applications</span>.
-            </p>
-
-            <textarea id="json-input" rows="7" placeholder='Paste your structured JSON data array here... [{"zoren_no": "ZRM1153015", "oem_no": "17040-3SG0C 17040-3SG0E", "car_maker": "Nissan", "applications": "..."}]' 
-                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 transition resize-none font-mono text-sm shadow-inner"></textarea>
+            <textarea id="json-input" rows="10" placeholder='Paste your JSON data array here, e.g., [{"zoren_no": "ZRM1153015", "oem_no": "17040-3SG0C 17040-3SG0E", "car_maker": "Nissan", "applications": "..."}]' 
+                class="w-full p-3 border border-gray-300 rounded-lg shadow-sm p-2 focus:ring-indigo-500 focus:border-indigo-500 transition resize-none font-mono text-sm shadow-inner"></textarea>
             
             <div class="flex flex-col md:flex-row justify-between items-start mt-4">
                 <div class="flex flex-col space-y-2 mb-4 md:mb-0">
@@ -130,13 +123,13 @@
                 </div>
             </div>
 
-            <p class="mt-4 text-xs text-gray-500 italic">The system cleans the data, checks for duplicates based on <span class="font-semibold text-gray-700">ZOREN NO.</span>, and imports valid entries.</p>
+            <p class="mt-4 text-xs text-gray-500 italic">The system cleans the data, extracts <span class="font-semibold text-gray-700">ZOREN NO.</span> (used for duplicate check), OEM NO. (split into list), Car Maker, and APPLICATIONS.</p>
         </div>
     </div>
 
 
     <div id="edit-modal-backdrop" class="modal-backdrop">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl p-6 transform transition-all">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-xl p-6 transform transition-all scale-100 duration-300">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
                 <h3 id="edit-modal-title" class="text-2xl font-semibold text-gray-800">Edit Spare Part</h3>
                 <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600">
@@ -166,7 +159,7 @@
             <div class="mt-6 flex justify-between items-center">
                 <p id="edit-status" class="text-sm font-medium"></p>
                 <button id="save-edit-btn" onclick="savePart()"
-                    class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition transform hover:scale-[1.02] active:scale-[0.98]">
+                    class="px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50">
                     Save Changes
                 </button>
             </div>
@@ -175,7 +168,7 @@
 
 
     <div id="delete-modal-backdrop" class="modal-backdrop">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 transform transition-all">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-sm p-6 transform transition-all scale-100 duration-300">
             <h3 class="text-xl font-bold text-red-600 mb-3">Confirm Deletion</h3>
             <p class="text-gray-700 mb-6">Are you sure you want to permanently delete the part with Zoren No. <span id="delete-zoren-no" class="font-bold text-gray-900">N/A</span>? This action cannot be undone.</p>
 
@@ -197,5 +190,6 @@
     <div id="toast-container" class="space-y-3">
         </div>
 
+    <script type="module" src="script.js"></script>
 </body>
 </html>
