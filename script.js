@@ -1,17 +1,53 @@
-// Configuration Placeholders - KEEP THESE for the Gemini API call
+// --- FIREBASE SDK IMPORTS ---
+// Using the same version (12.6.0) as specified in your configuration output
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+import { 
+    getAuth, 
+    signInAnonymously, 
+    signInWithCustomToken, 
+    onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { 
+    getFirestore, 
+    collection, 
+    onSnapshot, 
+    doc, 
+    setDoc, 
+    deleteDoc, 
+    writeBatch 
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+
+// 🔑 --- FIREBASE CONFIGURATION (YOUR PROVIDED DETAILS) ---
+const firebaseConfig = {
+    apiKey: "AIzaSyD6BOz0T5xUlprWpI4AH2Y_5W3HnlRq0xI",
+    authDomain: "fastway-autospare-parts-2836c.firebaseapp.com",
+    projectId: "fastway-autospare-parts-2836c",
+    storageBucket: "fastway-autospare-parts-2836c.firebasestorage.app",
+    messagingSenderId: "721022068044",
+    appId: "1:721022068044:web:83af2578b52b8b11ea5be9",
+    measurementId: "G-0VEV7J2FTN"
+};
+
+// --- GEMINI API SETUP ---
+// NOTE: REPLACE THIS EMPTY STRING WITH YOUR GEMINI API KEY!
 const API_MODEL = 'gemini-2.5-flash';
-const API_KEY = ""; // <-- REPLACE with your actual Gemini API Key
+const API_KEY = ""; 
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${API_MODEL}:generateContent?key=${API_KEY}`;
 
+// Using projectId as appId for data path as per standard practice
+const appId = firebaseConfig.projectId; 
+// Securely retrieve auth token provided by the environment (if available)
+const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
-// --- Removed Firebase Variables and Imports ---
-// const appId = 'default-app-id'; // Removed
-// const firebaseConfig = null; // Removed
-// let db, auth; // Removed
-let userId = 'local-user'; // Mock user ID for local structure simulation
-let isAuthReady = true; // Always ready in local mode
 
-window.allPartsData = JSON.parse(localStorage.getItem('localPartsData') || '[]'); // Use local storage for mock data
+// --- INTERNAL STATE ---
+let db, auth;
+let userId = null;
+let isAuthReady = false;
+
+window.allPartsData = [];
 window.filteredPartsData = [];
 window.PARTS_KEYS = ['zoren_no', 'oem_no', 'car_maker', 'applications'];
 window.currentPartToEdit = null;
@@ -19,6 +55,19 @@ window.currentPartToEdit = null;
 // Load persistent settings
 window.sortColumn = localStorage.getItem('sortColumn') || 'zoren_no';
 window.sortDirection = localStorage.getItem('sortDirection') || 'asc';
+
+// Enable/Disable AI button based on API key presence
+document.addEventListener('DOMContentLoaded', () => {
+    const convertButton = document.getElementById('convert-image-btn');
+    if (convertButton) {
+        convertButton.disabled = API_KEY === "";
+        if (API_KEY === "") {
+            document.getElementById('conversion-status-image').textContent = '⚠️ Please enter your Gemini API Key to enable AI conversion.';
+        } else {
+            document.getElementById('conversion-status-image').textContent = 'Select up to 10 images.';
+        }
+    }
+});
 
 // --- UTILITY FUNCTIONS (TOAST) ---
 
@@ -32,7 +81,7 @@ window.showToast = (message, type = 'info') => {
     if (type === 'error') bgColor = 'bg-red-600';
     if (type === 'warning') bgColor = 'bg-yellow-600';
 
-    toast.className = `toast toast p-4 mb-3 text-white rounded-lg shadow-xl ${bgColor}`;
+    toast.className = `toast p-4 mb-3 text-white rounded-lg shadow-xl ${bgColor}`;
     toast.innerHTML = `<div class="font-semibold">${type.toUpperCase()}</div><p class="text-sm">${message}</p>`;
 
     container.appendChild(toast);
@@ -56,38 +105,99 @@ const fileToBase64 = (file) => {
     });
 };
 
-// --- FIRESTORE/FIREBASE REPLACEMENTS ---
+// --- FIREBASE INITIALIZATION AND AUTH ---
 
-// Simplified Data Handling (No Firebase required)
-const updateLocalData = () => {
-    // 1. Calculate stats
-    const carMakers = new Set(window.allPartsData.map(p => p.car_maker).filter(m => m && m.trim()).map(m => m.trim().toLowerCase()));
+const initFirebase = async () => {
     
-    // 2. Update UI stats
-    document.getElementById('total-parts-count').textContent = window.allPartsData.length;
-    document.getElementById('unique-makers-count').textContent = carMakers.size;
+    if (!firebaseConfig) {
+        console.error("Firebase configuration is missing.");
+        document.getElementById('status-message').innerText = "ERROR: Firebase config missing. Cannot persist data.";
+        window.showToast("Firebase config missing. Data cannot be saved.", 'error');
+        return;
+    }
 
-    // 3. Save to local storage (Simple persistence)
-    localStorage.setItem('localPartsData', JSON.stringify(window.allPartsData));
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app); // Initialize analytics
+    db = getFirestore(app);
+    auth = getAuth(app);
     
-    // 4. Re-render the view
-    searchAndRender();
+    try {
+        if (initialAuthToken) {
+            await signInWithCustomToken(auth, initialAuthToken);
+        } else {
+            await signInAnonymously(auth);
+        }
+    } catch (e) {
+        console.error("Initial Authentication failed:", e);
+        try {
+            await signInAnonymously(auth);
+        } catch(anonError) {
+            console.error("Anonymous authentication failed:", anonError);
+        }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        isAuthReady = true;
+        if (user) {
+            userId = user.uid;
+            document.getElementById('status-message').innerText = `Authenticated`;
+            document.getElementById('user-id-display').textContent = userId;
+            
+            const savedSearchTerm = localStorage.getItem('searchTerm') || '';
+            document.getElementById('search-input').value = savedSearchTerm;
+            
+            listenForPartsData();
+        } else {
+            document.getElementById('status-message').innerText = "Not Authenticated";
+            document.getElementById('user-id-display').textContent = 'N/A';
+            window.showToast("Authentication failed. Using anonymous mode.", 'warning');
+        }
+    });
 };
 
-const initLocalApp = () => {
-    document.getElementById('status-message').innerText = `Local Mode`;
-    document.getElementById('user-id-display').textContent = userId;
-    
-    const savedSearchTerm = localStorage.getItem('searchTerm') || '';
-    document.getElementById('search-input').value = savedSearchTerm;
-    
-    // Initial data load and render
-    updateLocalData(); 
+window.onload = initFirebase;
+
+// --- FIRESTORE DATA OPERATIONS ---
+
+const getCollectionRef = () => {
+    if (!userId || !db) {
+        throw new Error("Database not ready or User ID not available for database operation."); 
+    }
+    // Path: /artifacts/{appId}/users/{userId}/spare_parts (Private Data)
+    return collection(db, 'artifacts', appId, 'users', userId, 'spare_parts');
 };
 
-window.onload = initLocalApp;
+const listenForPartsData = () => {
+    if (!isAuthReady || !userId || !db) return;
 
-// --- LLM API CALLER SCHEMAS (UNCHANGED) ---
+    try {
+        const partsCollection = getCollectionRef();
+        onSnapshot(partsCollection, (snapshot) => {
+            const parts = [];
+            const carMakers = new Set();
+            snapshot.forEach((doc) => {
+                const data = doc.data();
+                parts.push({ id: doc.id, ...data });
+                if (data.car_maker && data.car_maker.trim()) {
+                    carMakers.add(data.car_maker.trim().toLowerCase());
+                }
+            });
+            window.allPartsData = parts;
+            
+            document.getElementById('total-parts-count').textContent = parts.length;
+            document.getElementById('unique-makers-count').textContent = carMakers.size;
+
+            searchAndRender();
+        }, (error) => {
+            console.error("Error listening to Firestore:", error);
+            window.showToast("Error loading data: " + error.message, 'error');
+        });
+    } catch (e) {
+         console.error("Failed to set up listener:", e);
+    }
+};
+
+// --- LLM API CALLER SCHEMAS ---
 
 const JSON_SCHEMA = {
     type: "ARRAY",
@@ -108,6 +218,11 @@ const JSON_SCHEMA = {
 // --- AI CONVERSION LOGIC (IMAGE) ---
 
 window.handleImageConversion = async () => {
+    if (!API_KEY) {
+         window.showToast("Gemini API Key is missing. Cannot run AI conversion.", 'error');
+         return;
+    }
+
     const imageInput = document.getElementById('image-file-input');
     const files = imageInput.files;
     const statusBox = document.getElementById('conversion-status-image');
@@ -138,7 +253,7 @@ window.handleImageConversion = async () => {
         
         statusBox.textContent = `Step 2/2: Processing ${files.length} image(s) with AI Vision...`;
 
-        const userQuery = "You are a specialized data extraction AI. Analyze the image(s) content and strictly extract all tabular spare parts data from ALL images provided. Aggregate the results into a single JSON array structure, identifying the unique Zoren No, OEM part numbers, Car Maker, and vehicle Applications. If a value is missing, use an empty string. The output must be one single JSON array.";
+        const userQuery = "You are a specialized data extraction AI. Analyze the image(s) content and strictly extract all tabular spare parts data from ALL images provided. Aggregate the results into a single JSON array structure, identifying the unique Zoren No, OEM part numbers, Car Maker, and vehicle Applications. If a value is missing, use an empty string. The output must be one single JSON array. Do not include any text outside the JSON block.";
 
         const payload = {
             contents: [{ role: "user", parts: [{ text: userQuery }, ...imageParts] }],
@@ -156,8 +271,7 @@ window.handleImageConversion = async () => {
         statusBox.className = 'text-sm font-medium mt-1 text-green-600 min-h-4';
         imageInput.value = ''; 
 
-        window.showToast("AI image conversion complete. Starting local data import...", 'info');
-        await window.savePastedData();
+        window.showToast("AI image conversion complete. Review data and click 'Import'.", 'success');
 
     } catch (error) {
         console.error("AI Image Conversion Error:", error);
@@ -190,7 +304,7 @@ const fetchAiStructuredData = async (payload) => {
     }
     
     if (!response || !response.ok) {
-        let errorDetails = response ? `Status: ${response.status}` : finalError.message;
+        let errorDetails = response ? `Status: ${response.status}` : finalError ? finalError.message : 'Unknown network error';
         throw new Error(`AI API call failed: ${errorDetails}`);
     }
 
@@ -215,8 +329,8 @@ window.savePastedData = async () => {
     pasteButton.disabled = true;
     statusBox.className = 'text-sm font-medium mt-1 text-blue-600 min-h-4';
 
-    if (!isAuthReady || !userId) {
-        statusBox.textContent = 'Error: App not ready.';
+    if (!isAuthReady || !userId || !db) {
+        statusBox.textContent = 'Error: Authentication not ready. Please wait a moment.';
         statusBox.className = 'text-sm font-medium mt-1 text-red-500 min-h-4';
         pasteButton.disabled = false;
         return;
@@ -262,8 +376,6 @@ window.savePastedData = async () => {
                 if (existingZorenNos.has(cleanPart.zoren_no)) {
                     duplicatesFound++;
                 } else {
-                    // Create a mock ID for a new part
-                    cleanPart.id = 'local-' + Math.random().toString(36).substring(2, 9);
                     cleanedData.push(cleanPart);
                     existingZorenNos.add(cleanPart.zoren_no);
                 }
@@ -280,16 +392,28 @@ window.savePastedData = async () => {
             return;
         }
 
-        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. Saving to local storage...`;
+        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. Saving to database...`;
 
-        // --- Firebase Batch Write Logic REPLACED with local array update ---
-        window.allPartsData.push(...cleanedData);
-        updateLocalData();
-        let addedCount = cleanedData.length;
-        // -------------------------------------------------------------------
+        // Batch Write to Firestore
+        const partsCollection = getCollectionRef();
+        let batch = writeBatch(db);
+        const batchLimit = 499;
+        let addedCount = 0;
 
+        for (let i = 0; i < cleanedData.length; i++) {
+            const part = cleanedData[i];
+            // Using doc() without an ID to let Firestore auto-generate one
+            const newDocRef = doc(partsCollection); 
+            batch.set(newDocRef, part);
+            addedCount++;
 
-        const finalMessage = `Successfully imported ${addedCount} new parts to local catalog!`;
+            if ((i + 1) % batchLimit === 0 || i === cleanedData.length - 1) {
+                await batch.commit();
+                if (i < cleanedData.length - 1) batch = writeBatch(db);
+            }
+        }
+
+        const finalMessage = `Successfully imported ${addedCount} new parts!`;
         statusBox.textContent = finalMessage;
         statusBox.className = 'text-sm font-medium mt-1 text-green-600 min-h-4';
         window.showToast(finalMessage, 'success');
@@ -348,7 +472,10 @@ window.closeEditModal = () => {
 };
 
 window.savePart = async () => {
-    if (!isAuthReady || !userId) return;
+    if (!isAuthReady || !userId || !db) {
+         window.showToast("Cannot save: Authentication not ready.", 'error');
+         return;
+    }
 
     const statusBox = document.getElementById('edit-status');
     const saveButton = document.getElementById('save-edit-btn');
@@ -384,22 +511,20 @@ window.savePart = async () => {
             applications: applications
         };
 
-        if (isNew) {
-            // Add new part to local data
-            updatedPart.id = 'local-' + Math.random().toString(36).substring(2, 9);
-            window.allPartsData.push(updatedPart);
-        } else {
-            // Update existing part in local data
-            const index = window.allPartsData.findIndex(p => p.id === partId);
-            if (index !== -1) {
-                window.allPartsData[index] = { id: partId, ...updatedPart };
-            }
-        }
-        
-        updateLocalData(); // Save to local storage and re-render
+        const partsCollection = getCollectionRef();
+        let docRef;
 
-        const successMsg = `Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'} in local catalog!`;
+        if (isNew) {
+            docRef = doc(partsCollection); // Firestore generates ID
+        } else {
+            docRef = doc(partsCollection, partId); // Update existing
+        }
+
+        await setDoc(docRef, updatedPart);
+
+        const successMsg = `Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'}!`;
         statusBox.textContent = successMsg;
+        statusBox.classList.remove('text-red-500');
         statusBox.classList.add('text-green-600');
         window.showToast(successMsg, 'success');
         setTimeout(window.closeEditModal, 1500);
@@ -408,6 +533,7 @@ window.savePart = async () => {
         console.error(`${action} Error:`, error);
         const msg = `${action} failed: ` + error.message;
         statusBox.textContent = msg;
+        statusBox.classList.remove('text-green-600');
         statusBox.classList.add('text-red-500');
         window.showToast(msg, 'error');
     } finally {
@@ -430,21 +556,15 @@ window.deletePart = async () => {
     const zorenNo = document.getElementById('delete-zoren-no').textContent;
     window.closeDeleteModal(); 
 
-    if (!partId || !isAuthReady || !userId) return;
+    if (!partId || !isAuthReady || !userId || !db) {
+         window.showToast("Cannot delete: Authentication not ready.", 'error');
+         return;
+    }
 
     try {
-        // --- Firebase Delete Logic REPLACED with local array filter ---
-        const initialLength = window.allPartsData.length;
-        window.allPartsData = window.allPartsData.filter(p => p.id !== partId);
-        
-        if (window.allPartsData.length < initialLength) {
-             updateLocalData(); // Save to local storage and re-render
-             window.showToast(`Part ${zorenNo} deleted successfully from local catalog.`, 'success');
-        } else {
-             throw new Error("Part not found in local data.");
-        }
-        // -------------------------------------------------------------
-        
+        const partDocRef = doc(db, getCollectionRef().path, partId);
+        await deleteDoc(partDocRef);
+        window.showToast(`Part ${zorenNo} deleted successfully.`, 'success');
     } catch (error) {
         console.error("Delete Error:", error);
         window.showToast(`Deletion of ${zorenNo} failed: ${error.message}`, 'error');
@@ -452,7 +572,7 @@ window.deletePart = async () => {
 };
 
 
-// --- UI & RENDERING LOGIC (UNCHANGED) ---
+// --- UI & RENDERING LOGIC ---
 
 window.toggleImportPanel = (show) => {
     const modal = document.getElementById('import-modal-backdrop');
@@ -593,8 +713,12 @@ window.searchAndRender = () => {
             <div class="flex justify-between items-start border-b pb-2">
                 <span class="text-xl font-bold text-indigo-700 break-words">${part.zoren_no || 'N/A'}</span>
                 <div class="flex space-x-2 flex-shrink-0 mt-0.5">
-                    <button onclick="openEditModal('${part.id}')" title="Edit Part" class="text-indigo-600 hover:text-indigo-800 transition transform hover:scale-110 focus:outline-none">...</button>
-                    <button onclick="showConfirmDelete('${part.id}', '${safeZorenNo}')" title="Delete Part" class="text-red-600 hover:text-red-800 transition transform hover:scale-110 focus:outline-none">...</button>
+                    <button onclick="openEditModal('${part.id}')" title="Edit Part" class="text-indigo-600 hover:text-indigo-800 transition transform hover:scale-110 focus:outline-none">
+                       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                    </button>
+                    <button onclick="showConfirmDelete('${part.id}', '${safeZorenNo}')" title="Delete Part" class="text-red-600 hover:text-red-800 transition transform hover:scale-110 focus:outline-none">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    </button>
                 </div>
             </div>
             <div class="text-sm">
