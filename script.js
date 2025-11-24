@@ -1,21 +1,20 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
 import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-import { getFirestore, collection, onSnapshot, doc, writeBatch, deleteDoc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+import { getFirestore, collection, onSnapshot, doc, writeBatch, deleteDoc, getDocs, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
 // --- GLOBAL SETUP ---
-// NOTE: These variables are typically injected by a hosting environment. 
-// They are kept for function compatibility.
-const firebaseConfig = {
-  apiKey: "AIzaSyCxY-CUX3lqlxATdvEi0PMEaoip25VHxm0",
-  authDomain: "fastway-spare.firebaseapp.com",
-  projectId: "fastway-spare",
-  storageBucket: "fastway-spare.firebasestorage.app",
-  messagingSenderId: "777904219002",
-  appId: "1:777904219002:web:2c52606630c7aa16e66cc3",
-  measurementId: "G-XDFP2M8DFL"
-};
-
+// NOTE: These variables (__app_id, __firebase_config, __initial_auth_token) are placeholders 
+// that must be defined/injected by the environment hosting this app.
+const userFirebaseConfig = {
+            apiKey: "AIzaSyCxY-CUX3lqlxATdvEi0PMEaoip25VHxm0",
+            authDomain: "fastway-spare.firebaseapp.com",
+            projectId: "fastway-spare",
+            storageBucket: "fastway-spare.firebasestorage.app",
+            messagingSenderId: "777904219002",
+            appId: "1:777904219002:web:2c52606630c7aa16e66cc3",
+            measurementId: "G-XDFP2M8DFL"
+        }; 
 let db, auth;
 let userId = null;
 let isAuthReady = false;
@@ -41,8 +40,8 @@ window.showToast = (message, type = 'info') => {
     if (type === 'error') bgColor = 'bg-red-600';
     if (type === 'warning') bgColor = 'bg-yellow-600';
 
-    toast.className = `toast p-4 mb-3 text-white rounded-lg shadow-xl ${bgColor}`;
-    toast.innerHTML = `<div class="font-semibold">${type.toUpperCase()}</div><p class="text-sm">${message}</p>`;
+    toast.className = toast p-4 mb-3 text-white rounded-lg shadow-xl ${bgColor};
+    toast.innerHTML = <div class="font-semibold">${type.toUpperCase()}</div><p class="text-sm">${message}</p>;
 
     container.appendChild(toast);
     
@@ -52,53 +51,6 @@ window.showToast = (message, type = 'info') => {
     }, 5000);
 };
 
-// --- FIREBASE INITIALIZATION AND AUTH ---
-
-const initFirebase = async () => {
-    if (!firebaseConfig) {
-        console.error("Firebase configuration is missing.");
-        document.getElementById('status-message').innerText = "ERROR: Firebase config missing. Cannot persist data.";
-        window.showToast("Firebase config missing. Data cannot be saved.", 'error');
-        return;
-    }
-
-    const app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-    // setLogLevel('Debug'); // Enable for detailed debugging
-
-    // Authentication logic
-    if (initialAuthToken) {
-        await signInWithCustomToken(auth, initialAuthToken).catch(e => {
-            console.error("Custom token sign-in failed, falling back to anonymous:", e);
-            return signInAnonymously(auth);
-        });
-    } else {
-        await signInAnonymously(auth);
-    }
-
-    onAuthStateChanged(auth, (user) => {
-        isAuthReady = true;
-        if (user) {
-            userId = user.uid;
-            console.log("Firebase Auth Ready. User ID:", userId);
-            document.getElementById('status-message').innerText = `Authenticated`;
-            document.getElementById('user-id-display').textContent = userId;
-            
-            // Load saved search term
-            const savedSearchTerm = localStorage.getItem('searchTerm') || '';
-            document.getElementById('search-input').value = savedSearchTerm;
-            
-            listenForPartsData();
-        } else {
-            console.log("No user signed in.");
-            document.getElementById('status-message').innerText = "Not Authenticated";
-            document.getElementById('user-id-display').textContent = 'N/A';
-        }
-    });
-};
-
-window.onload = initFirebase;
 
 // --- FIRESTORE DATA OPERATIONS ---
 
@@ -169,12 +121,13 @@ window.savePastedData = async () => {
         // Clean, Filter, and Check for Duplicates
         const existingZorenNos = new Set(window.allPartsData.map(p => p.zoren_no));
         const cleanedData = [];
-        let duplicatesFound = 0;
+        let skippedCount = 0;
         
-        pastedData.forEach(part => {
+        pastedData.forEach((part, index) => {
             const cleanPart = {};
-            let isValid = false;
-            
+            let zorenNoValue = '';
+
+            // 1. Clean and Normalize all required fields
             window.PARTS_KEYS.forEach(key => {
                 const normalizedKey = key.toLowerCase();
                 let value = null;
@@ -191,37 +144,53 @@ window.savePastedData = async () => {
                         .map(oem => oem.trim())
                         .filter(oem => oem.length > 0);
                 } else {
-                    cleanPart[key] = (typeof value === 'string' ? value.trim() : String(value || '')).trim();
-                }
-
-                if ((key === 'zoren_no' && cleanPart[key].length > 0) || (key !== 'zoren_no' && cleanPart[key].length > 0) || (key === 'oem_no' && cleanPart[key].length > 0)) {
-                    isValid = true;
+                    const cleanedVal = (typeof value === 'string' ? value.trim() : String(value || '')).trim();
+                    cleanPart[key] = cleanedVal;
+                    if (key === 'zoren_no') {
+                        zorenNoValue = cleanedVal;
+                    }
                 }
             });
 
-            // Check for duplicates using the Zoren No.
-            if (isValid && cleanPart.zoren_no.length > 0) {
-                if (existingZorenNos.has(cleanPart.zoren_no)) {
-                    duplicatesFound++;
-                } else {
-                    cleanedData.push(cleanPart);
-                    existingZorenNos.add(cleanPart.zoren_no); // Add new Zoren No. to set to prevent duplicates within the same batch
-                }
+            // 2. Mandatory Zoren No. check
+            if (zorenNoValue.length === 0) {
+                console.warn(Skipped record ${index + 1}: Missing mandatory Zoren No. Original data:, part);
+                skippedCount++;
+                return;
             }
-        }); 
 
+            // 3. Duplicate check (against existing data)
+            if (existingZorenNos.has(zorenNoValue)) {
+                console.warn(Skipped record ${index + 1}: Duplicate Zoren No. (${zorenNoValue}) already exists in catalog.);
+                skippedCount++;
+                return;
+            }
+
+            // 4. Duplicate check (against the current batch)
+            if (cleanedData.some(p => p.zoren_no === zorenNoValue)) {
+                console.warn(Skipped record ${index + 1}: Duplicate Zoren No. (${zorenNoValue}) within the current import batch.);
+                skippedCount++;
+                return;
+            }
+
+            // If all checks pass
+            cleanedData.push(cleanPart);
+        }); 
+        
+        const recordsSkipped = skippedCount; 
+        
         if (cleanedData.length === 0) {
-            const msg = duplicatesFound > 0 ? 
-                `All ${duplicatesFound} parts were already in the catalog (Duplicate Zoren No.).` :
+            const msg = recordsSkipped > 0 ? 
+                All ${recordsSkipped} parts were skipped. Check your console (F12) for detailed reasons (likely missing Zoren No. or duplicates). :
                 'Import failed. No valid spare parts found after cleaning.';
             statusBox.textContent = msg;
             statusBox.classList.remove('text-blue-600');
             statusBox.classList.add('text-red-500');
-            if (duplicatesFound === 0) throw new Error("No valid data found in paste.");
+            if (recordsSkipped === 0) throw new Error("No valid data found in paste.");
             return;
         }
 
-        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. ${duplicatesFound > 0 ? `(${duplicatesFound} duplicates skipped).` : ''} Saving to database...`;
+        statusBox.textContent = `Cleaning complete. Found ${cleanedData.length} new parts. ${recordsSkipped > 0 ? (${recordsSkipped} skipped). : ''} Saving to database...`;
 
         // Save Data to Firestore (using batched writes for efficiency)
         const partsCollection = getCollectionRef();
@@ -238,12 +207,12 @@ window.savePastedData = async () => {
             if ((i + 1) % batchLimit === 0 || i === cleanedData.length - 1) {
                 await batch.commit();
                 if (i < cleanedData.length - 1) {
-                   batch = writeBatch(db);
+                    batch = writeBatch(db);
                 }
             }
         }
 
-        const finalMessage = `Successfully imported ${addedCount} new parts! ${duplicatesFound > 0 ? `(${duplicatesFound} duplicates were skipped).` : ''}`;
+        const finalMessage = `Successfully imported ${addedCount} new parts! ${recordsSkipped > 0 ? (${recordsSkipped} skipped). : ''}`;
         statusBox.textContent = finalMessage;
         statusBox.classList.remove('text-blue-600');
         statusBox.classList.add('text-green-600');
@@ -336,7 +305,7 @@ window.savePart = async () => {
             p.zoren_no === zoren_no && p.id !== partId
         );
         if (isDuplicate) {
-            throw new Error(`Zoren No. "${zoren_no}" already exists in the catalog.`);
+            throw new Error(Zoren No. "${zoren_no}" already exists in the catalog.);
         }
 
         // Prepare data object
@@ -358,14 +327,14 @@ window.savePart = async () => {
 
         await setDoc(docRef, updatedPart);
 
-        const successMsg = `Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'}!`;
+        const successMsg = Part ${zoren_no} successfully ${isNew ? 'created' : 'updated'}!;
         statusBox.textContent = successMsg;
         statusBox.classList.add('text-green-600');
         window.showToast(successMsg, 'success');
         setTimeout(window.closeEditModal, 1500);
 
     } catch (error) {
-        console.error(`${action} Error:`, error);
+        console.error(${action} Error:, error);
         const msg = `${action} failed: ` + error.message;
         statusBox.textContent = msg;
         statusBox.classList.add('text-red-500');
@@ -395,10 +364,10 @@ window.deletePart = async () => {
     try {
         const partDocRef = doc(db, getCollectionRef().path, partId);
         await deleteDoc(partDocRef);
-        window.showToast(`Part ${zorenNo} deleted successfully.`, 'success');
+        window.showToast(Part ${zorenNo} deleted successfully., 'success');
     } catch (error) {
         console.error("Delete Error:", error);
-        window.showToast(`Deletion of ${zorenNo} failed: ${error.message}`, 'error');
+        window.showToast(Deletion of ${zorenNo} failed: ${error.message}, 'error');
     }
 };
 
@@ -481,7 +450,7 @@ window.searchAndRender = () => {
     });
     
     if (window.filteredPartsData.length === 0) {
-        const emptyMessage = searchTerm ? `No results found for "${searchTerm}".` : "The catalog is empty. Start by adding a part manually or importing JSON data.";
+        const emptyMessage = searchTerm ? No results found for "${searchTerm}". : "The catalog is empty. Start by adding a part manually or importing JSON data.";
         
         // For Desktop Table
         const row = tableBody.insertRow();
@@ -491,9 +460,9 @@ window.searchAndRender = () => {
         cell.textContent = emptyMessage;
         
         // For Mobile Cards
-        mobileContainer.innerHTML = `<div class="p-8 text-center text-gray-400 italic bg-white rounded-xl">${emptyMessage}</div>`;
+        mobileContainer.innerHTML = <div class="p-8 text-center text-gray-400 italic bg-white rounded-xl">${emptyMessage}</div>;
 
-        document.getElementById('result-count').textContent = `Showing 0 / ${window.allPartsData.length} parts`;
+        document.getElementById('result-count').textContent = Showing 0 / ${window.allPartsData.length} parts;
         return;
     }
 
@@ -575,10 +544,10 @@ window.searchAndRender = () => {
     });
 
     document.getElementById('result-count').textContent = 
-        `Showing ${window.filteredPartsData.length} / ${window.allPartsData.length} parts`;
+        Showing ${window.filteredPartsData.length} / ${window.allPartsData.length} parts;
 };
 
-// --- EXPORT & PRETTIFY ---
+// --- EXPORT & PRETTIFY (as before) ---
 
 window.exportJson = () => {
     if (window.filteredPartsData.length === 0) {
